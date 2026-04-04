@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P D Ahuja & Co. | Chartered Accountants, Meerut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue:        #1E3A8A;
+  --blue-dark:   #152D6E;
+  --blue-mid:    #2D52B8;
+  --blue-light:  #EEF2FF;
+  --gold:        #C9A84C;
+  --gold-light:  #F0D98A;
+  --white:       #FFFFFF;
+  --off-white:   #F7F8FC;
+  --gray-100:    #F3F4F6;
+  --gray-200:    #E5E7EB;
+  --gray-500:    #6B7280;
+  --gray-700:    #374151;
+  --dark:        #0D1B45;
+  --font-display:'Playfair Display', Georgia, serif;
+  --font-body:   'Jost', sans-serif;
+  --shadow-sm:   0 2px 8px rgba(30,58,138,0.08);
+  --shadow-md:   0 8px 30px rgba(30,58,138,0.14);
+  --shadow-lg:   0 20px 60px rgba(30,58,138,0.20);
+  --radius:      8px;
+  --radius-lg:   16px;
+  --tr:          all 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  color: var(--gray-700);
+  background: var(--white);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAVIGATION ─────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 2rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 0.75rem;
+  text-decoration: none; cursor: pointer;
+}
+.nav-logo-icon {
+  width: 44px; height: 44px;
+  background: var(--blue);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 0.95rem;
+  letter-spacing: 0.5px; flex-shrink: 0;
+}
+.nav-logo-name {
+  font-family: var(--font-display);
+  font-weight: 700; font-size: 1rem;
+  color: var(--blue); line-height: 1.2; letter-spacing: 0.4px;
+}
+.nav-logo-sub {
+  font-size: 0.62rem; color: var(--gray-500);
+  letter-spacing: 1.8px; text-transform: uppercase;
+}
+.nav-links {
+  display: flex; align-items: center; gap: 0.15rem; list-style: none;
+}
+.nav-links a {
+  display: block; padding: 0.45rem 0.95rem;
+  font-size: 0.875rem; font-weight: 500;
+  color: var(--gray-700); text-decoration: none;
+  border-radius: 6px; transition: var(--tr);
+  letter-spacing: 0.2px; cursor: pointer;
+}
+.nav-links a:hover { color: var(--blue); background: var(--blue-light); }
+.nav-links a.active { color: var(--blue); font-weight: 600; background: var(--blue-light); }
+.nav-cta { background: var(--blue) !important; color: white !important; }
+.nav-cta:hover { background: var(--blue-dark) !important; color: white !important; }
+
+/* ── PAGES ───────────────────────────────────────── */
+.page { display: none; min-height: 100vh; padding-top: 72px; }
+.page.active { display: block; }
+
+/* ── HERO ────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: calc(100vh - 72px);
+  background: var(--blue);
+  display: flex; align-items: center; overflow: hidden;
+}
+.hero-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.hero-glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 72% 45%, rgba(45,82,184,0.55) 0%, transparent 55%),
+    radial-gradient(ellipse at 18% 85%, rgba(201,168,76,0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(30,58,138,0.3) 0%, transparent 60%);
+}
+.hero-content {
+  position: relative; z-index: 1;
+  max-width: 1200px; margin: 0 auto;
+  padding: 5rem 2rem;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 5rem; align-items: center; width: 100%;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(201,168,76,0.14);
+  border: 1px solid rgba(201,168,76,0.32);
+  color: var(--gold-light);
+  padding: 0.4rem 1.1rem;
+  border-radius: 100px;
+  font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 1.8px; text-transform: uppercase;
+  margin-bottom: 1.6rem;
+  animation: fadeUp 0.7s ease both;
+}
+.hero-tag::before {
+  content: ''; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--gold);
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 4.8vw, 4.25rem);
+  font-weight: 800; color: var(--white);
+  line-height: 1.1; margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+.hero-title em { font-style: italic; color: var(--gold-light); }
+.hero-tagline {
+  font-size: 1.1rem; color: rgba(255,255,255,0.78);
+  margin-bottom: 0.6rem; line-height: 1.75;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+.hero-heritage {
+  font-size: 0.83rem; color: rgba(255,255,255,0.48);
+  margin-bottom: 2.75rem; letter-spacing: 0.2px;
+  animation: fadeUp 0.7s 0.25s ease both;
+}
+.hero-heritage strong { color: rgba(255,255,255,0.72); }
+.hero-actions {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  animation: fadeUp 0.7s 0.35s ease both;
+}
+.btn-primary {
+  background: var(--gold); color: var(--dark);
+  padding: 0.9rem 2.1rem;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; border: none;
+  transition: var(--tr); letter-spacing: 0.2px;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(201,168,76,0.35); }
+.btn-outline {
+  background: transparent; color: white;
+  padding: 0.9rem 2.1rem;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 500; font-size: 0.9rem;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.32);
+  transition: var(--tr);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-outline:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.65); }
+
+.hero-right {
+  display: flex; flex-direction: column; gap: 1.2rem;
+  animation: fadeIn 0.8s 0.3s ease both;
+}
+.hero-card {
+  background: rgba(255,255,255,0.065);
+  border: 1px solid rgba(255,255,255,0.11);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem 1.75rem;
+  backdrop-filter: blur(8px);
+  transition: var(--tr);
+}
+.hero-card:hover { background: rgba(255,255,255,0.11); transform: translateX(6px); }
+.hero-card-icon {
+  width: 40px; height: 40px;
+  background: rgba(201,168,76,0.2);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 0.8rem; font-size: 1.2rem;
+}
+.hero-card h4 {
+  font-family: var(--font-display);
+  font-size: 1rem; color: white; margin-bottom: 0.3rem; font-weight: 600;
+}
+.hero-card p { font-size: 0.8rem; color: rgba(255,255,255,0.58); line-height: 1.55; }
+
+/* ── STATS BAR ──────────────────────────────────── */
+.stats-bar {
+  background: var(--dark);
+  padding: 1.75rem 2rem;
+  display: flex; justify-content: center; gap: 4rem; flex-wrap: wrap;
+}
+.stat-item { text-align: center; }
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 2.1rem; font-weight: 700;
+  color: var(--gold); line-height: 1;
+}
+.stat-label {
+  font-size: 0.72rem; color: rgba(255,255,255,0.55);
+  letter-spacing: 1.2px; text-transform: uppercase; margin-top: 0.3rem;
+}
+
+/* ── LAYOUT HELPERS ─────────────────────────────── */
+.section { padding: 6rem 2rem; }
+.section-alt { background: var(--off-white); }
+.container { max-width: 1200px; margin: 0 auto; }
+
+.section-label {
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 0.7rem;
+  display: flex; align-items: center; gap: 0.6rem;
+}
+.section-label::before {
+  content: ''; display: block;
+  width: 22px; height: 2px; background: var(--gold);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.85rem);
+  font-weight: 700; color: var(--dark);
+  line-height: 1.2; margin-bottom: 1rem;
+}
+.section-title.light { color: white; }
+.section-desc {
+  font-size: 1rem; color: var(--gray-500);
+  max-width: 600px; line-height: 1.75; margin-bottom: 3rem;
+}
+.section-desc.light { color: rgba(255,255,255,0.68); }
+
+/* ── PAGE HEADER ────────────────────────────────── */
+.page-header {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
+  padding: 5rem 2rem 4.5rem;
+  text-align: center; position: relative; overflow: hidden;
+}
+.page-header::before {
+  content: ''; position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+.page-header-content { position: relative; z-index: 1; }
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.5vw, 3.75rem);
+  color: white; font-weight: 700; margin-bottom: 0.75rem;
+}
+.page-header p {
+  color: rgba(255,255,255,0.68); font-size: 1rem;
+  max-width: 520px; margin: 0 auto; line-height: 1.65;
+}
+.ph-label {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 0.75rem;
+}
+.ph-label::before {
+  content: ''; display: block; width: 22px; height: 2px; background: var(--gold);
+}
+
+/* ── SERVICES ───────────────────────────────────── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.service-card {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 2.1rem;
+  transition: var(--tr);
+  position: relative; overflow: hidden; cursor: default;
+}
+.service-card::after {
+  content: ''; position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: linear-gradient(180deg, var(--blue), var(--blue-mid));
+  transform: scaleY(0); transition: transform 0.35s ease;
+  transform-origin: bottom;
+}
+.service-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-5px); border-color: rgba(30,58,138,0.25);
+}
+.service-card:hover::after { transform: scaleY(1); }
+.service-icon {
+  width: 52px; height: 52px;
+  background: var(--blue-light); border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 1.3rem; transition: var(--tr);
+}
+.service-card:hover .service-icon { background: var(--blue); filter: brightness(1.2); }
+.service-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem; font-weight: 600;
+  color: var(--dark); margin-bottom: 0.55rem;
+}
+.service-desc { font-size: 0.875rem; color: var(--gray-500); line-height: 1.65; }
+
+/* ── TEAM ───────────────────────────────────────── */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+}
+.team-card {
+  background: white;
+  border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200); transition: var(--tr);
+}
+.team-card:hover { box-shadow: var(--shadow-md); transform: translateY(-5px); }
+.team-card-header {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%);
+  padding: 2.5rem 2rem 3rem;
+  display: flex; align-items: center; gap: 1.5rem;
+}
+.team-avatar {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: rgba(255,255,255,0.14);
+  border: 3px solid rgba(255,255,255,0.28);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.65rem; font-weight: 700; color: white; flex-shrink: 0;
+}
+.team-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem; font-weight: 700; color: white;
+}
+.team-designation {
+  font-size: 0.78rem; color: rgba(255,255,255,0.68);
+  margin-top: 0.2rem; letter-spacing: 0.4px;
+}
+.team-card-body {
+  padding: 1.25rem 2rem 2rem;
+  margin-top: -1.75rem; position: relative;
+}
+.team-tag {
+  display: inline-block; background: var(--gold);
+  color: var(--dark); font-size: 0.68rem; font-weight: 700;
+  padding: 0.3rem 0.85rem; border-radius: 100px;
+  letter-spacing: 0.5px; margin-bottom: 1rem;
+}
+.team-bio { font-size: 0.875rem; color: var(--gray-500); line-height: 1.72; }
+
+/* ── LEGACY BANNER ──────────────────────────────── */
+.legacy-banner {
+  background: linear-gradient(140deg, var(--dark) 0%, var(--blue) 100%);
+  padding: 5rem 2rem;
+  text-align: center; position: relative; overflow: hidden;
+}
+.legacy-quote-bg {
+  position: absolute;
+  font-family: var(--font-display);
+  font-size: 22rem; color: rgba(255,255,255,0.025);
+  top: -3rem; left: 2rem; line-height: 1;
+  pointer-events: none; user-select: none;
+}
+.legacy-year-bg {
+  font-family: var(--font-display);
+  font-size: 9rem; font-weight: 800;
+  color: rgba(201,168,76,0.08);
+  position: absolute; right: 4%;
+  top: 50%; transform: translateY(-50%);
+  pointer-events: none; line-height: 1;
+}
+.legacy-content { position: relative; z-index: 1; }
+.legacy-content .section-label { justify-content: center; }
+.legacy-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 3.2vw, 2.6rem);
+  color: white; font-weight: 700;
+  margin: 0.75rem 0; line-height: 1.3;
+}
+.legacy-text {
+  font-size: 1rem; color: rgba(255,255,255,0.62);
+  max-width: 600px; margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* ── INSIGHTS ───────────────────────────────────── */
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+}
+.insight-card {
+  background: white;
+  border-radius: var(--radius-lg); overflow: hidden;
+  border: 1px solid var(--gray-200);
+  transition: var(--tr); cursor: pointer;
+}
+.insight-card:hover { box-shadow: var(--shadow-md); transform: translateY(-5px); }
+.insight-card-top { background: var(--blue); padding: 2.1rem; }
+.insight-category {
+  display: inline-block;
+  background: rgba(201,168,76,0.18);
+  border: 1px solid rgba(201,168,76,0.38);
+  color: var(--gold-light);
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 1.6px; text-transform: uppercase;
+  padding: 0.3rem 0.8rem; border-radius: 100px; margin-bottom: 1rem;
+}
+.insight-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem; color: white; font-weight: 600; line-height: 1.42;
+}
+.insight-card-body { padding: 1.6rem; }
+.insight-date { font-size: 0.75rem; color: var(--gray-500); letter-spacing: 0.4px; margin-bottom: 0.75rem; }
+.insight-excerpt { font-size: 0.875rem; color: var(--gray-500); line-height: 1.7; margin-bottom: 1.25rem; }
+.insight-read {
+  color: var(--blue); font-size: 0.85rem; font-weight: 600;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  transition: gap 0.2s ease;
+}
+.insight-read:hover { gap: 0.75rem; }
+
+/* ── FEATURED ───────────────────────────────────── */
+.featured-list { display: flex; flex-direction: column; gap: 1.5rem; }
+.featured-item {
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  padding: 2.1rem 2.25rem;
+  display: flex; gap: 2.25rem; align-items: flex-start;
+  transition: var(--tr);
+}
+.featured-item:hover { box-shadow: var(--shadow-md); border-color: rgba(30,58,138,0.3); transform: translateX(4px); }
+.featured-num {
+  font-family: var(--font-display);
+  font-size: 3.5rem; font-weight: 800;
+  color: var(--blue-light); line-height: 1;
+  flex-shrink: 0; width: 60px; text-align: right;
+  user-select: none;
+}
+.featured-content h3 {
+  font-family: var(--font-display);
+  font-size: 1.25rem; color: var(--dark); margin-bottom: 0.55rem; font-weight: 600;
+}
+.featured-content p { font-size: 0.875rem; color: var(--gray-500); line-height: 1.68; }
+.featured-badge {
+  display: inline-block; background: var(--blue-light);
+  color: var(--blue); font-size: 0.68rem; font-weight: 600;
+  padding: 0.25rem 0.8rem; border-radius: 100px;
+  letter-spacing: 0.4px; margin-top: 0.85rem;
+}
+
+/* ── HELP / CONTACT ─────────────────────────────── */
+.help-grid {
+  display: grid; grid-template-columns: 1.25fr 1fr;
+  gap: 4rem; align-items: start;
+}
+.help-form {
+  background: white; border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); padding: 2.75rem;
+  box-shadow: var(--shadow-sm);
+}
+.form-group { margin-bottom: 1.3rem; }
+.form-label {
+  display: block; font-size: 0.78rem; font-weight: 600;
+  color: var(--dark); letter-spacing: 0.3px; margin-bottom: 0.42rem;
+}
+.form-control {
+  width: 100%; padding: 0.78rem 1rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 0.9rem;
+  color: var(--dark); background: var(--gray-100);
+  transition: var(--tr); outline: none;
+}
+.form-control:focus { border-color: var(--blue); background: white; box-shadow: 0 0 0 3px rgba(30,58,138,0.09); }
+.form-control::placeholder { color: var(--gray-500); }
+textarea.form-control { resize: vertical; min-height: 125px; }
+select.form-control { cursor: pointer; }
+.form-submit {
+  width: 100%; padding: 0.9rem;
+  background: var(--blue); color: white;
+  border: none; border-radius: var(--radius);
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: var(--tr); letter-spacing: 0.3px;
+}
+.form-submit:hover { background: var(--blue-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+.help-info { display: flex; flex-direction: column; gap: 1.25rem; }
+.help-info-card {
+  background: var(--blue-light); border-radius: var(--radius-lg);
+  padding: 1.75rem; display: flex; gap: 1rem; align-items: flex-start;
+}
+.help-info-icon {
+  width: 44px; height: 44px; background: var(--blue);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.help-info-card h4 {
+  font-family: var(--font-display); font-size: 0.95rem;
+  color: var(--dark); margin-bottom: 0.3rem; font-weight: 600;
+}
+.help-info-card p { font-size: 0.875rem; color: var(--gray-500); line-height: 1.5; }
+.help-info-card a { color: var(--blue); text-decoration: none; font-weight: 500; }
+.help-info-card a:hover { text-decoration: underline; }
+
+/* ── FAQ ─────────────────────────────────────────── */
+.faq-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.faq-item { border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; }
+.faq-q {
+  padding: 1.1rem 1.25rem; background: white; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  font-weight: 500; color: var(--dark); font-size: 0.88rem;
+  transition: var(--tr);
+}
+.faq-q:hover { background: var(--blue-light); color: var(--blue); }
+.faq-q.open { background: var(--blue); color: white; }
+.faq-q .faq-icon { font-size: 1.1rem; transition: transform 0.25s ease; }
+.faq-q.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.3s ease;
+  font-size: 0.875rem; color: var(--gray-500);
+  line-height: 1.72; background: white;
+  padding: 0 1.25rem;
+}
+.faq-a.open { max-height: 200px; padding: 1rem 1.25rem; }
+
+/* ── ABOUT ───────────────────────────────────────── */
+.about-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4.5rem; align-items: center; margin-bottom: 5rem;
+}
+.about-numbers {
+  background: var(--blue); border-radius: var(--radius-lg);
+  padding: 3rem 2.5rem;
+}
+.about-num-item { margin-bottom: 2.25rem; }
+.about-num-item:last-child { margin-bottom: 0; }
+.about-num-val {
+  font-family: var(--font-display);
+  font-size: 3.25rem; font-weight: 800;
+  color: var(--gold); line-height: 1;
+}
+.about-num-label {
+  font-size: 0.82rem; color: rgba(255,255,255,0.6);
+  margin-top: 0.3rem; line-height: 1.5;
+}
+
+.values-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem; margin-top: 3rem;
+}
+.value-card {
+  background: white; border: 1px solid var(--gray-200);
+  border-radius: var(--radius-lg); padding: 1.9rem 1.75rem;
+  text-align: center; transition: var(--tr);
+}
+.value-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); border-color: rgba(30,58,138,0.2); }
+.value-icon { font-size: 2.1rem; margin-bottom: 0.85rem; }
+.value-name {
+  font-family: var(--font-display); font-size: 1rem;
+  color: var(--dark); font-weight: 600; margin-bottom: 0.42rem;
+}
+.value-desc { font-size: 0.8rem; color: var(--gray-500); line-height: 1.58; }
+
+/* ── FOOTER ─────────────────────────────────────── */
+footer { background: var(--dark); color: rgba(255,255,255,0.7); padding: 3.5rem 2rem 1.75rem; }
+.footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr;
+  gap: 3.5rem; margin-bottom: 2.75rem;
+}
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.35rem; color: white; font-weight: 700; margin-bottom: 0.2rem;
+}
+.footer-brand-sub {
+  font-size: 0.65rem; letter-spacing: 2.2px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 1.1rem;
+}
+.footer-desc { font-size: 0.875rem; line-height: 1.75; margin-bottom: 1.25rem; }
+.footer-email { color: var(--gold-light); text-decoration: none; font-size: 0.875rem; }
+.footer-email:hover { color: white; }
+.footer-heading {
+  font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 2.2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 1.1rem;
+}
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
+.footer-links li a {
+  color: rgba(255,255,255,0.58); text-decoration: none;
+  font-size: 0.875rem; transition: var(--tr); cursor: pointer;
+}
+.footer-links li a:hover { color: white; padding-left: 4px; }
+.footer-bottom {
+  max-width: 1200px; margin: 0 auto;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  display: flex; justify-content: space-between;
+  align-items: center; flex-wrap: wrap; gap: 0.5rem;
+}
+.footer-bottom p { font-size: 0.78rem; }
+.footer-icai { font-size: 0.72rem; color: rgba(255,255,255,0.38); letter-spacing: 0.4px; }
+
+/* ── ANIMATIONS ─────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.scroll-reveal {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; gap: 3rem; }
+  .hero-right { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .help-grid { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; gap: 2rem; }
+}
+@media (max-width: 640px) {
+  .stats-bar { gap: 2rem; }
+  .nav-links a { padding: 0.4rem 0.6rem; font-size: 0.78rem; }
+  .featured-item { flex-direction: column; gap: 0.75rem; }
+  .featured-num { font-size: 2rem; width: auto; text-align: left; }
+  nav { padding: 0 1rem; }
+  .section { padding: 4rem 1rem; }
+  .page-header { padding: 4rem 1rem 3.5rem; }
+  .hero-content { padding: 3.5rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVIGATION ══════════════════════════════════════════ -->
+<nav id="main-nav">
+  <div class="nav-logo" onclick="navigate('home')">
+    <div class="nav-logo-icon">PDA</div>
+    <div>
+      <div class="nav-logo-name">P D AHUJA &amp; CO.</div>
+      <div class="nav-logo-sub">Chartered Accountants</div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a id="nav-home"     class="active"  onclick="navigate('home')">Home</a></li>
+    <li><a id="nav-insights"                 onclick="navigate('insights')">Insights</a></li>
+    <li><a id="nav-featured"                 onclick="navigate('featured')">Featured</a></li>
+    <li><a id="nav-about"                    onclick="navigate('about')">About Us</a></li>
+    <li><a id="nav-help"    class="nav-cta"  onclick="navigate('help')">Help</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE: HOME
+══════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div>
+        <div class="hero-tag">Established 2024 &nbsp;·&nbsp; Practice Since 1987</div>
+        <h1 class="hero-title">P D Ahuja<br><em>&amp; Co.</em></h1>
+        <p class="hero-tagline">Blending the age old wisdom with AI enabled marketplace.</p>
+        <p class="hero-heritage">
+          Operating under the aegis of <strong>Dharmendra Ahuja &amp; Co., Chartered Accountant</strong>
+          — a practice trusted across Meerut since <strong>1987</strong>.
+        </p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="navigate('help')">Get In Touch &rarr;</button>
+          <button class="btn-outline" onclick="navigate('about')">Our Story</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-card">
+          <div class="hero-card-icon">🏛️</div>
+          <h4>Legacy of Excellence</h4>
+          <p>Rooted in 37+ years of professional practice under Dharmendra Ahuja &amp; Co.</p>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-icon">🤖</div>
+          <h4>AI-Enabled Practice</h4>
+          <p>Modern tools and AI-powered insights for sharper, faster advisory.</p>
+        </div>
+        <div class="hero-card">
+          <div class="hero-card-icon">⚖️</div>
+          <h4>Full-Spectrum Services</h4>
+          <p>Audit, Tax, GST, Company Law, Accounting &amp; Advisory — all under one roof.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-number">1987</div><div class="stat-label">In Practice Since</div></div>
+    <div class="stat-item"><div class="stat-number">37+</div><div class="stat-label">Years of Experience</div></div>
+    <div class="stat-item"><div class="stat-number">7</div><div class="stat-label">Service Areas</div></div>
+    <div class="stat-item"><div class="stat-number">2</div><div class="stat-label">Partners</div></div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="section">
+    <div class="container">
+      <div class="section-label">What We Do</div>
+      <h2 class="section-title">Comprehensive Professional Services</h2>
+      <p class="section-desc">A complete suite of financial, legal, and advisory services — tailored to the evolving needs of businesses and individuals across India.</p>
+      <div class="services-grid">
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">📊</div>
+          <div class="service-name">Audit &amp; Assurance</div>
+          <p class="service-desc">Statutory, internal, and concurrent audits conducted with rigorous standards to ensure financial integrity and full regulatory compliance.</p>
+        </div>
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">💰</div>
+          <div class="service-name">Tax Advisory &amp; Compliance</div>
+          <p class="service-desc">Income tax planning, return filing, assessments, and litigation support for individuals, HUFs, firms, and corporates.</p>
+        </div>
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">🧾</div>
+          <div class="service-name">GST Services</div>
+          <p class="service-desc">GST registration, return filing, reconciliations, refund claims, and advisory on complex GST matters across sectors.</p>
+        </div>
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">⚖️</div>
+          <div class="service-name">Company Law / MCA Filings</div>
+          <p class="service-desc">Incorporation, ROC filings, annual compliances, and advisory under the Companies Act, 2013 and the LLP Act.</p>
+        </div>
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">📒</div>
+          <div class="service-name">Accounting &amp; Bookkeeping</div>
+          <p class="service-desc">Accurate bookkeeping, payroll management, financial statement preparation, and MIS reporting to keep your books impeccable.</p>
+        </div>
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">🚀</div>
+          <div class="service-name">Business Advisory &amp; Consulting</div>
+          <p class="service-desc">Strategic guidance on business structuring, mergers &amp; acquisitions, due diligence, and sustainable growth planning.</p>
+        </div>
+        <div class="service-card scroll-reveal">
+          <div class="service-icon">🔒</div>
+          <div class="service-name">Internal Control System Implementation</div>
+          <p class="service-desc">Designing robust internal control frameworks, risk assessments, and SOPs to strengthen governance and operational discipline.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-label">Our Team</div>
+      <h2 class="section-title">Meet the Partners</h2>
+      <p class="section-desc">Led by experienced professionals committed to the highest standards of integrity and excellence in practice.</p>
+      <div class="team-grid">
+        <div class="team-card scroll-reveal">
+          <div class="team-card-header">
+            <div class="team-avatar">PA</div>
+            <div>
+              <div class="team-name">CA. Prateek Ahuja</div>
+              <div class="team-designation">Managing Partner</div>
+            </div>
+          </div>
+          <div class="team-card-body">
+            <span class="team-tag">Managing Partner</span>
+            <p class="team-bio">CA. Prateek Ahuja brings a forward-thinking approach to professional practice, combining deep technical expertise with a vision for AI-enabled advisory services. He leads the firm's strategy, client relations, and digital transformation initiatives — shaping a practice built for the future.</p>
+          </div>
+        </div>
+        <div class="team-card scroll-reveal">
+          <div class="team-card-header">
+            <div class="team-avatar">DA</div>
+            <div>
+              <div class="team-name">CA. Dharmendra Kumar Ahuja</div>
+              <div class="team-designation">Senior Partner</div>
+            </div>
+          </div>
+          <div class="team-card-body">
+            <span class="team-tag">Senior Partner</span>
+            <p class="team-bio">CA. Dharmendra Kumar Ahuja is a veteran Chartered Accountant with over 37 years in practice. As the proprietor of Dharmendra Ahuja &amp; Co. since 1987, his unmatched experience in taxation, audit, and business advisory forms the cornerstone of the firm's heritage and client trust.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGACY BANNER -->
+  <div class="legacy-banner">
+    <div class="legacy-quote-bg">"</div>
+    <div class="legacy-year-bg">1987</div>
+    <div class="legacy-content">
+      <div class="section-label">Our Heritage</div>
+      <h2 class="legacy-title">Where Wisdom Meets Innovation</h2>
+      <p class="legacy-text">P D Ahuja &amp; Co. carries the proud legacy of Dharmendra Ahuja &amp; Co., Chartered Accountant — a proprietorship that has served clients with distinction since 1987. Today, we blend that age-old wisdom with the power of AI-enabled tools to deliver sharper, faster, and smarter advisory.</p>
+    </div>
+  </div>
+
+</div><!-- /page-home -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE: INSIGHTS
+══════════════════════════════════════════════════════════ -->
+<div id="page-insights" class="page">
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="ph-label">Knowledge Hub</div>
+      <h1>Insights</h1>
+      <p>Stay informed with the latest in taxation, GST, company law, and financial advisory.</p>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="insights-grid">
+        <div class="insight-card scroll-reveal">
+          <div class="insight-card-top">
+            <div class="insight-category">GST Update</div>
+            <div class="insight-title">Key Changes in GST Return Filing for FY 2024-25: What Businesses Must Know</div>
+          </div>
+          <div class="insight-card-body">
+            <div class="insight-date">March 2025</div>
+            <p class="insight-excerpt">The GST Council has introduced significant changes to GSTR-1 and GSTR-3B filing requirements. We break down what these mean for your business compliance calendar.</p>
+            <a class="insight-read">Read More →</a>
+          </div>
+        </div>
+        <div class="insight-card scroll-reveal">
+          <div class="insight-card-top">
+            <div class="insight-category">Income Tax</div>
+            <div class="insight-title">Union Budget 2025: Key Tax Implications for Individuals and Corporates</div>
+          </div>
+          <div class="insight-card-body">
+            <div class="insight-date">February 2025</div>
+            <p class="insight-excerpt">A comprehensive analysis of the Union Budget 2025 proposals — revised tax slabs, capital gains changes, and new deduction provisions explained simply.</p>
+            <a class="insight-read">Read More →</a>
+          </div>
+        </div>
+        <div class="insight-card scroll-reveal">
+          <div class="insight-card-top">
+            <div class="insight-category">Company Law</div>
+            <div class="insight-title">MCA's New Filing Requirements Under the Companies Act: Your 2025 Compliance Checklist</div>
+          </div>
+          <div class="insight-card-body">
+            <div class="insight-date">January 2025</div>
+            <p class="insight-excerpt">The Ministry of Corporate Affairs has issued new circulars affecting annual filings and board resolutions. Here is your step-by-step compliance checklist for 2025.</p>
+            <a class="insight-read">Read More →</a>
+          </div>
+        </div>
+        <div class="insight-card scroll-reveal">
+          <div class="insight-card-top">
+            <div class="insight-category">Audit</div>
+            <div class="insight-title">The Growing Importance of Internal Controls in MSMEs: A Practical Guide</div>
+          </div>
+          <div class="insight-card-body">
+            <div class="insight-date">December 2024</div>
+            <p class="insight-excerpt">Small and medium enterprises often overlook internal controls until issues arise. This guide helps MSMEs build robust control systems from the ground up — affordably.</p>
+            <a class="insight-read">Read More →</a>
+          </div>
+        </div>
+        <div class="insight-card scroll-reveal">
+          <div class="insight-card-top">
+            <div class="insight-category">AI &amp; Finance</div>
+            <div class="insight-title">How AI is Transforming the Chartered Accountancy Profession in India</div>
+          </div>
+          <div class="insight-card-body">
+            <div class="insight-date">November 2024</div>
+            <p class="insight-excerpt">AI is reshaping tax research, audit procedures, and financial advisory. Explore how AI-powered tools are making CA practice more efficient and insightful.</p>
+            <a class="insight-read">Read More →</a>
+          </div>
+        </div>
+        <div class="insight-card scroll-reveal">
+          <div class="insight-card-top">
+            <div class="insight-category">Business Advisory</div>
+            <div class="insight-title">Startup Incorporation in India: LLP vs. Private Limited — Which Suits You?</div>
+          </div>
+          <div class="insight-card-body">
+            <div class="insight-date">October 2024</div>
+            <p class="insight-excerpt">Choosing the right business structure is critical for startups. We compare LLPs and Private Limited Companies on tax efficiency, compliance burden, and scalability.</p>
+            <a class="insight-read">Read More →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-insights -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE: FEATURED
+══════════════════════════════════════════════════════════ -->
+<div id="page-featured" class="page">
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="ph-label">Highlights</div>
+      <h1>Featured</h1>
+      <p>Our key achievements, milestones, and specialised practice areas that define our professional identity.</p>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="featured-list">
+        <div class="featured-item scroll-reveal">
+          <div class="featured-num">01</div>
+          <div class="featured-content">
+            <h3>A New Firm Built on a 37-Year Legacy</h3>
+            <p>P D Ahuja &amp; Co. was established in 2024, carrying forward the prestigious legacy of Dharmendra Ahuja &amp; Co., Chartered Accountant — a practice that has served clients across Meerut and the region since 1987. This lineage gives us a unique blend of deep-rooted expertise and a fresh, forward-looking perspective.</p>
+            <span class="featured-badge">Heritage &amp; Foundation</span>
+          </div>
+        </div>
+        <div class="featured-item scroll-reveal">
+          <div class="featured-num">02</div>
+          <div class="featured-content">
+            <h3>AI-Enabled Practice — Pioneering the Future of CA Services</h3>
+            <p>P D Ahuja &amp; Co. is among the early adopters of AI-powered tools within the Chartered Accountancy profession in Meerut. From AI-assisted tax research and automated compliance tracking to intelligent document processing, we are building the practice of tomorrow — today.</p>
+            <span class="featured-badge">Technology &amp; Innovation</span>
+          </div>
+        </div>
+        <div class="featured-item scroll-reveal">
+          <div class="featured-num">03</div>
+          <div class="featured-content">
+            <h3>Full-Spectrum Professional Services Under One Roof</h3>
+            <p>From Statutory Audit and Tax Advisory to GST, Company Law, Internal Controls, Accounting, and Business Consulting — our clients benefit from a comprehensive, integrated service model that eliminates the need for multiple advisors and ensures consistent, coordinated advice.</p>
+            <span class="featured-badge">Service Excellence</span>
+          </div>
+        </div>
+        <div class="featured-item scroll-reveal">
+          <div class="featured-num">04</div>
+          <div class="featured-content">
+            <h3>Dedicated Internal Control System Implementation Practice</h3>
+            <p>A specialised service area focused on designing and implementing Internal Control Systems for growing businesses and MSMEs — helping organisations transition from informal operations to structured, governance-driven enterprises with robust SOPs and risk frameworks.</p>
+            <span class="featured-badge">Specialised Practice</span>
+          </div>
+        </div>
+        <div class="featured-item scroll-reveal">
+          <div class="featured-num">05</div>
+          <div class="featured-content">
+            <h3>Serving Clients Across Meerut and the NCR Region</h3>
+            <p>Based in Meerut, Uttar Pradesh, we serve a growing clientele of individuals, MSMEs, startups, and corporates — providing the personalised service of a boutique firm combined with the depth of expertise you would expect from a larger practice.</p>
+            <span class="featured-badge">Client Reach</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-featured -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE: ABOUT US
+══════════════════════════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="ph-label">Who We Are</div>
+      <h1>About Us</h1>
+      <p>A new-generation CA firm firmly rooted in decades of professional legacy and trust.</p>
+    </div>
+  </div>
+
+  <!-- STORY -->
+  <section class="section">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <div class="section-label">Our Story</div>
+          <h2 class="section-title">Wisdom That Stands the Test of Time</h2>
+          <p style="color:var(--gray-500);line-height:1.82;margin-bottom:1.1rem;">P D Ahuja &amp; Co., Chartered Accountants, was established in 2024 in Meerut, Uttar Pradesh, by CA. Prateek Ahuja (Managing Partner) and CA. Dharmendra Kumar Ahuja (Senior Partner), with a clear vision: to create a forward-looking professional practice anchored in a rich legacy of trust.</p>
+          <p style="color:var(--gray-500);line-height:1.82;margin-bottom:1.1rem;">The firm operates under the aegis of <strong style="color:var(--dark);">Dharmendra Ahuja &amp; Co., Chartered Accountant</strong> — a proprietorship firm of CA. Dharmendra Kumar Ahuja, who has been in continuous practice since <strong style="color:var(--dark);">1987</strong>. This heritage of over 37 years forms the bedrock of our professional credibility.</p>
+          <p style="color:var(--gray-500);line-height:1.82;">Our tagline — <em style="color:var(--blue);font-family:var(--font-display);">"Blending the age old wisdom with AI enabled marketplace"</em> — captures our philosophy: time-tested expertise amplified by modern, AI-enabled tools to deliver advisory that is both reliable and relevant.</p>
+        </div>
+        <div class="about-numbers scroll-reveal">
+          <div class="section-label" style="color:var(--gold-light);">By The Numbers</div>
+          <div style="margin-top:1.75rem;">
+            <div class="about-num-item">
+              <div class="about-num-val">1987</div>
+              <div class="about-num-label">Year the founding partner entered practice</div>
+            </div>
+            <div class="about-num-item">
+              <div class="about-num-val">37+</div>
+              <div class="about-num-label">Years of combined professional experience</div>
+            </div>
+            <div class="about-num-item">
+              <div class="about-num-val">7</div>
+              <div class="about-num-label">Comprehensive service areas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PARTNERS -->
+      <div class="section-label">Our Partners</div>
+      <h2 class="section-title" style="margin-bottom:2.5rem;">Leadership Team</h2>
+      <div class="team-grid" style="margin-bottom:5rem;">
+        <div class="team-card scroll-reveal">
+          <div class="team-card-header">
+            <div class="team-avatar">PA</div>
+            <div>
+              <div class="team-name">CA. Prateek Ahuja</div>
+              <div class="team-designation">FCA &nbsp;·&nbsp; Managing Partner</div>
+            </div>
+          </div>
+          <div class="team-card-body">
+            <span class="team-tag">Managing Partner</span>
+            <p class="team-bio">CA. Prateek Ahuja is the driving force behind P D Ahuja &amp; Co.'s vision and growth. With a strong foundation in taxation, audit, and corporate advisory, he leads client engagement, firm strategy, and the AI-enabled practice transformation. He brings a sharp analytical mind paired with a client-centric approach that sets the firm apart in the market.</p>
+          </div>
+        </div>
+        <div class="team-card scroll-reveal">
+          <div class="team-card-header">
+            <div class="team-avatar">DA</div>
+            <div>
+              <div class="team-name">CA. Dharmendra Kumar Ahuja</div>
+              <div class="team-designation">FCA &nbsp;·&nbsp; Senior Partner</div>
+            </div>
+          </div>
+          <div class="team-card-body">
+            <span class="team-tag">Senior Partner</span>
+            <p class="team-bio">CA. Dharmendra Kumar Ahuja is a stalwart of the CA profession in Meerut. Having commenced practice in 1987 as proprietor of Dharmendra Ahuja &amp; Co., his expertise spans Statutory Audit, Direct Taxation, and Business Advisory across diverse industries. His institutional knowledge and professional reputation form the very foundation upon which P D Ahuja &amp; Co. is built.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VALUES -->
+      <div class="section-label">Our Values</div>
+      <h2 class="section-title">What We Stand For</h2>
+      <div class="values-grid">
+        <div class="value-card scroll-reveal">
+          <div class="value-icon">🎯</div>
+          <div class="value-name">Integrity</div>
+          <p class="value-desc">Unwavering honesty and ethical conduct in every professional engagement — no exceptions, ever.</p>
+        </div>
+        <div class="value-card scroll-reveal">
+          <div class="value-icon">📘</div>
+          <div class="value-name">Expertise</div>
+          <p class="value-desc">Continuous learning, technical depth, and staying ahead of every regulatory change that matters to you.</p>
+        </div>
+        <div class="value-card scroll-reveal">
+          <div class="value-icon">🤝</div>
+          <div class="value-name">Client First</div>
+          <p class="value-desc">Your business goals are our priority. We deliver advice that is practical and actionable, not just theoretical.</p>
+        </div>
+        <div class="value-card scroll-reveal">
+          <div class="value-icon">⚡</div>
+          <div class="value-name">Innovation</div>
+          <p class="value-desc">Embracing AI and modern technology to deliver faster, sharper, and more insightful advisory for every client.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-about -->
+
+
+<!-- ══════════════════════════════════════════════════════════
+     PAGE: HELP
+══════════════════════════════════════════════════════════ -->
+<div id="page-help" class="page">
+  <div class="page-header">
+    <div class="page-header-content">
+      <div class="ph-label">Get In Touch</div>
+      <h1>Help &amp; Contact</h1>
+      <p>Have a question or need professional advice? We are here to help.</p>
+    </div>
+  </div>
+  <section class="section">
+    <div class="container">
+      <div class="help-grid">
+
+        <!-- FORM -->
+        <div class="help-form scroll-reveal">
+          <div class="section-label">Send a Message</div>
+          <h2 class="section-title" style="font-size:1.65rem;margin-bottom:1.6rem;">How Can We Help You?</h2>
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" class="form-control" placeholder="Your full name" id="f-name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" class="form-control" placeholder="your@email.com" id="f-email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" placeholder="+91 00000 00000">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Service Required</label>
+            <select class="form-control">
+              <option value="">Select a service...</option>
+              <option>Audit &amp; Assurance</option>
+              <option>Tax Advisory &amp; Compliance</option>
+              <option>GST Services</option>
+              <option>Company Law / MCA Filings</option>
+              <option>Accounting &amp; Bookkeeping</option>
+              <option>Business Advisory &amp; Consulting</option>
+              <option>Internal Control System Implementation</option>
+              <option>General Enquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Message *</label>
+            <textarea class="form-control" placeholder="Describe your query or requirement..." id="f-msg"></textarea>
+          </div>
+          <button class="form-submit" onclick="handleSubmit()">Send Message &rarr;</button>
+          <p style="font-size:0.75rem;color:var(--gray-500);margin-top:0.8rem;text-align:center;">We typically respond within 1 business day.</p>
+        </div>
+
+        <!-- INFO + FAQ -->
+        <div class="help-info">
+          <div class="section-label">Contact Information</div>
+          <div class="help-info-card scroll-reveal">
+            <div class="help-info-icon">✉️</div>
+            <div>
+              <h4>Email Us</h4>
+              <p><a href="mailto:info@pdahuja.com">info@pdahuja.com</a></p>
+              <p style="font-size:0.78rem;margin-top:0.2rem;">For all enquiries and professional consultations</p>
+            </div>
+          </div>
+          <div class="help-info-card scroll-reveal">
+            <div class="help-info-icon">📍</div>
+            <div>
+              <h4>Our Location</h4>
+              <p>Meerut, Uttar Pradesh, India</p>
+            </div>
+          </div>
+          <div class="help-info-card scroll-reveal">
+            <div class="help-info-icon">🕐</div>
+            <div>
+              <h4>Working Hours</h4>
+              <p>Monday – Saturday</p>
+              <p>10:00 AM – 6:30 PM IST</p>
+            </div>
+          </div>
+
+          <div style="margin-top:0.75rem;">
+            <div class="section-label">FAQ</div>
+            <h3 style="font-family:var(--font-display);font-size:1.3rem;color:var(--dark);margin-bottom:1.1rem;">Common Questions</h3>
+            <div class="faq-list">
+              <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                  <span>Do you serve clients outside Meerut?</span>
+                  <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-a">Yes. We serve clients across Uttar Pradesh, the NCR region, and can assist clients anywhere in India for GST, Income Tax, and Company Law matters on a fully virtual basis.</div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                  <span>What is the first step to engage your firm?</span>
+                  <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-a">Simply email us at info@pdahuja.com or fill out the contact form. We will schedule an initial consultation to understand your requirements and provide a tailored proposal at no obligation.</div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                  <span>Do you work with startups and MSMEs?</span>
+                  <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-a">Absolutely. We have a dedicated focus on MSMEs and startups — from incorporation, GST registration, and accounting setup to ongoing compliance and growth advisory.</div>
+              </div>
+              <div class="faq-item">
+                <div class="faq-q" onclick="toggleFaq(this)">
+                  <span>What does "AI enabled marketplace" mean?</span>
+                  <span class="faq-icon">+</span>
+                </div>
+                <div class="faq-a">We leverage AI-powered tools for tax research, automated compliance alerts, document processing, and financial analysis — giving our clients faster, more accurate, and more insightful advisory than traditional methods allow.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</div><!-- /page-help -->
+
+
+<!-- ══ FOOTER ═══════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand-name">P D Ahuja &amp; Co.</div>
+      <div class="footer-brand-sub">Chartered Accountants</div>
+      <p class="footer-desc">Blending the age old wisdom with AI enabled marketplace. A practice rooted in trust since 1987, reimagined for the modern professional era.</p>
+      <a href="mailto:info@pdahuja.com" class="footer-email">info@pdahuja.com</a>
+    </div>
+    <div>
+      <div class="footer-heading">Quick Links</div>
+      <ul class="footer-links">
+        <li><a onclick="navigate('home')">Home</a></li>
+        <li><a onclick="navigate('insights')">Insights</a></li>
+        <li><a onclick="navigate('featured')">Featured</a></li>
+        <li><a onclick="navigate('about')">About Us</a></li>
+        <li><a onclick="navigate('help')">Help &amp; Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-heading">Services</div>
+      <ul class="footer-links">
+        <li><a>Audit &amp; Assurance</a></li>
+        <li><a>Tax Advisory</a></li>
+        <li><a>GST Services</a></li>
+        <li><a>Company Law</a></li>
+        <li><a>Bookkeeping</a></li>
+        <li><a>Business Advisory</a></li>
+        <li><a>Internal Controls</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2024–2025 P D Ahuja &amp; Co., Chartered Accountants, Meerut. All rights reserved.</p>
+    <p class="footer-icai">Registered with the Institute of Chartered Accountants of India</p>
+  </div>
+</footer>
+
+
+<!-- ══ JAVASCRIPT ════════════════════════════════════════════ -->
+<script>
+/* ── Page navigation ── */
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('nav-' + page).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Re-trigger scroll reveals for newly shown page
+  setTimeout(checkReveal, 100);
+}
+
+/* ── FAQ accordion ── */
+function toggleFaq(el) {
+  const ans = el.nextElementSibling;
+  const isOpen = ans.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q').forEach(q => { q.classList.remove('open'); q.querySelector('.faq-icon').textContent = '+'; });
+  // Open clicked (if it was closed)
+  if (!isOpen) {
+    ans.classList.add('open');
+    el.classList.add('open');
+    el.querySelector('.faq-icon').textContent = '+';
+  }
+}
+
+/* ── Form submit ── */
+function handleSubmit() {
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const msg   = document.getElementById('f-msg').value.trim();
+  if (!name || !email || !msg) {
+    alert('Please fill in your name, email, and message before submitting.'); return;
+  }
+  alert('Thank you, ' + name + '!\n\nYour message has been received. We will get back to you at ' + email + ' within 1 business day.\n\nYou can also reach us directly at info@pdahuja.com');
+}
+
+/* ── Scroll reveal ── */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); } });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+function checkReveal() {
+  document.querySelectorAll('#page-' + currentPage() + ' .scroll-reveal').forEach(el => revealObserver.observe(el));
+}
+
+function currentPage() {
+  const active = document.querySelector('.page.active');
+  return active ? active.id.replace('page-', '') : 'home';
+}
+
+// Init
+checkReveal();
+</script>
+
+</body>
+</html>
