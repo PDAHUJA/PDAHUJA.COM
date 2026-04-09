@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — P D Ahuja & Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+  :root {
+    --royal: #1a3a6b;
+    --royal-dark: #0f2347;
+    --royal-light: #2a4f8f;
+    --gold: #c9a84c;
+    --gold-light: #e2c47a;
+    --white: #ffffff;
+    --off-white: #f8f7f4;
+    --light-grey: #f0eff0;
+    --mid-grey: #e2e0df;
+    --text: #2c2c2c;
+    --text-muted: #7a7a7a;
+    --success: #2e7d52;
+    --error: #c0392b;
+    --warning: #d4842a;
+    --sidebar-w: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--off-white);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── LOGIN SCREEN ─── */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal) 50%, var(--royal-light) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  #loginScreen::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.15);
+    top: -200px; right: -200px;
+  }
+  #loginScreen::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.1);
+    bottom: -150px; left: -100px;
+  }
+  .login-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 52px 44px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .login-logo .firm-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, var(--royal), var(--royal-light));
+    border-radius: 14px;
+    margin-bottom: 14px;
+  }
+  .login-logo .firm-initials span {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1px;
+  }
+  .login-logo h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--royal);
+    font-weight: 600;
+  }
+  .login-logo p {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .login-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--royal-dark);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .login-subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+  }
+  .form-group {
+    margin-bottom: 18px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--mid-grey);
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--royal);
+    box-shadow: 0 0 0 3px rgba(26,58,107,0.08);
+  }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .btn-primary {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, var(--royal), var(--royal-light));
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover { opacity: 0.92; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .login-error {
+    background: #fdf0ee;
+    border: 1px solid #f5c6c0;
+    color: var(--error);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* ─── APP SHELL ─── */
+  #appShell { display: none; min-height: 100vh; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: linear-gradient(180deg, var(--royal-dark) 0%, var(--royal) 100%);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sidebar-brand .brand-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px; height: 44px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+  .sidebar-brand .brand-badge span {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .sidebar-brand h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: var(--white);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .sidebar-brand p {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .sidebar-nav {
+    padding: 16px 0;
+    flex: 1;
+  }
+  .nav-section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 12px 24px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 24px;
+    color: rgba(255,255,255,0.65);
+    font-size: 13.5px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    text-decoration: none;
+  }
+  .nav-item i { width: 18px; text-align: center; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,0.06); color: var(--white); }
+  .nav-item.active {
+    background: rgba(201,168,76,0.12);
+    color: var(--gold-light);
+    border-left-color: var(--gold);
+    font-weight: 500;
+  }
+  .sidebar-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .user-details p { font-size: 12px; color: var(--white); font-weight: 500; }
+  .user-details span { font-size: 10px; color: rgba(255,255,255,0.4); }
+  .btn-logout {
+    width: 100%;
+    padding: 9px;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 7px;
+    color: rgba(255,255,255,0.6);
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+  .btn-logout:hover { background: rgba(192,57,43,0.2); color: #e87676; border-color: rgba(192,57,43,0.3); }
+
+  /* ─── MAIN CONTENT ─── */
+  .main-content {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--mid-grey);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--royal-dark);
+    font-weight: 600;
+  }
+  .topbar-actions { display: flex; align-items: center; gap: 12px; }
+  .btn-sm {
+    padding: 8px 16px;
+    border-radius: 7px;
+    font-family: 'Jost', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+  }
+  .btn-royal { background: var(--royal); color: var(--white); }
+  .btn-royal:hover { background: var(--royal-dark); }
+  .btn-gold { background: var(--gold); color: var(--white); }
+  .btn-gold:hover { background: #b8942e; }
+  .btn-outline {
+    background: transparent;
+    color: var(--royal);
+    border: 1.5px solid var(--royal);
+  }
+  .btn-outline:hover { background: var(--royal); color: var(--white); }
+  .btn-danger { background: var(--error); color: var(--white); }
+  .btn-danger:hover { background: #a93226; }
+  .btn-success { background: var(--success); color: var(--white); }
+
+  .page-content {
+    padding: 32px;
+    flex: 1;
+  }
+
+  /* ─── SECTION PANELS ─── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ─── DASHBOARD ─── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--mid-grey);
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--gold), var(--royal));
+    border-radius: 0 12px 12px 0;
+  }
+  .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: rgba(26,58,107,0.08);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .stat-icon i { color: var(--royal); font-size: 16px; }
+  .stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--royal-dark);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; }
+
+  .recent-activity {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--mid-grey);
+    overflow: hidden;
+  }
+  .section-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--mid-grey);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .section-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    color: var(--royal-dark);
+    font-weight: 600;
+  }
+  .activity-list { padding: 8px 0; }
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--light-grey);
+    transition: background 0.15s;
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-item:hover { background: var(--off-white); }
+  .activity-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .activity-text { flex: 1; font-size: 13px; color: var(--text); }
+  .activity-time { font-size: 11px; color: var(--text-muted); }
+
+  /* ─── POSTS / INSIGHTS ─── */
+  .posts-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .search-input {
+    padding: 9px 14px 9px 36px;
+    border: 1.5px solid var(--mid-grey);
+    border-radius: 8px;
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    outline: none;
+    width: 240px;
+    background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 12px center;
+    transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--royal); }
+
+  .posts-table-wrap {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--mid-grey);
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--light-grey); }
+  th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  td {
+    padding: 14px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--light-grey);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--off-white); }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge-published { background: #e8f5ee; color: var(--success); }
+  .badge-draft { background: #fff3e0; color: var(--warning); }
+  .table-actions { display: flex; gap: 6px; }
+
+  /* ─── MODAL / EDITOR ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,35,71,0.55);
+    z-index: 200;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 760px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    animation: slideUp 0.25s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal-header {
+    padding: 24px 28px;
+    border-bottom: 1px solid var(--mid-grey);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .modal-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--royal-dark);
+    font-weight: 600;
+  }
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: var(--light-grey);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .modal-close:hover { background: var(--mid-grey); color: var(--text); }
+  .modal-body { padding: 28px; }
+  .modal-footer {
+    padding: 20px 28px;
+    border-top: 1px solid var(--mid-grey);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ─── RICH TEXT EDITOR ─── */
+  .editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 8px;
+    background: var(--light-grey);
+    border: 1.5px solid var(--mid-grey);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+  }
+  .editor-btn {
+    padding: 5px 9px;
+    border: none;
+    background: transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text);
+    transition: background 0.15s;
+    font-family: 'Jost', sans-serif;
+  }
+  .editor-btn:hover { background: var(--mid-grey); }
+  .editor-btn.active { background: var(--royal); color: var(--white); }
+  .editor-content {
+    min-height: 260px;
+    padding: 16px;
+    border: 1.5px solid var(--mid-grey);
+    border-radius: 0 0 8px 8px;
+    outline: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .editor-content:focus { border-color: var(--royal); }
+
+  /* ─── CONTENT MANAGER ─── */
+  .content-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    background: var(--white);
+    border: 1px solid var(--mid-grey);
+    border-radius: 10px;
+    padding: 6px;
+    width: fit-content;
+  }
+  .content-tab {
+    padding: 8px 18px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+    font-family: 'Jost', sans-serif;
+  }
+  .content-tab.active { background: var(--royal); color: var(--white); }
+
+  .content-section { display: none; }
+  .content-section.active { display: block; }
+  .content-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--mid-grey);
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .content-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--royal-dark);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--mid-grey);
+  }
+
+  /* ─── TEAM MANAGEMENT ─── */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+  .team-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--mid-grey);
+    padding: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .team-avatar {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--royal), var(--royal-light));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+  .team-info h4 { font-size: 14px; font-weight: 600; color: var(--royal-dark); margin-bottom: 4px; }
+  .team-info p { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .role-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .role-partner { background: rgba(201,168,76,0.15); color: #8b6914; }
+  .role-admin { background: rgba(26,58,107,0.12); color: var(--royal); }
+  .role-staff { background: var(--light-grey); color: var(--text-muted); }
+
+  /* ─── CLIENT DIRECTORY ─── */
+  .client-count-badge {
+    background: rgba(26,58,107,0.08);
+    color: var(--royal);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* ─── EMAIL HUB ─── */
+  .preset-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .preset-card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--mid-grey);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .preset-card:hover { border-color: var(--royal); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,58,107,0.1); }
+  .preset-icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .preset-card h4 { font-size: 13px; font-weight: 600; color: var(--royal-dark); margin-bottom: 4px; }
+  .preset-card p { font-size: 11px; color: var(--text-muted); }
+
+  /* ─── TOAST NOTIFICATIONS ─── */
+  #toastContainer {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toast {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    border-left: 4px solid var(--success);
+    font-size: 13px;
+    color: var(--text);
+    min-width: 280px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastIn 0.3s ease;
+  }
+  .toast.error { border-left-color: var(--error); }
+  .toast.warning { border-left-color: var(--warning); }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ─── LOADING ─── */
+  .loading-spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--text-muted);
+  }
+  .empty-state i { font-size: 40px; margin-bottom: 12px; color: var(--mid-grey); display: block; }
+  .empty-state p { font-size: 14px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { transform: translateX(-260px); transition: transform 0.3s; }
+    .sidebar.open { transform: translateX(0); width: 260px; }
+    .main-content { margin-left: 0; }
+    .form-row { grid-template-columns: 1fr; }
+    .page-content { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN SCREEN ─── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="firm-initials"><span>PDA</span></div>
+      <h2>P D Ahuja & Co.</h2>
+      <p>Chartered Accountants</p>
+    </div>
+    <h2 class="login-title">Admin Portal</h2>
+    <p class="login-subtitle">Sign in to manage your firm's website</p>
+    <div class="login-error" id="loginError"></div>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" placeholder="you@pdahuja.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Sign In</button>
+  </div>
+</div>
+
+<!-- ─── APP SHELL ─── -->
+<div id="appShell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-badge"><span>PDA</span></div>
+      <h3>P D Ahuja & Co.</h3>
+      <p>Admin Panel</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" onclick="switchPanel('dashboard', this)">
+        <i class="fas fa-th-large"></i> Dashboard
+      </div>
+      <div class="nav-section-label">Content</div>
+      <div class="nav-item" onclick="switchPanel('insights', this)">
+        <i class="fas fa-newspaper"></i> Insights & Blog
+      </div>
+      <div class="nav-item" onclick="switchPanel('website', this)">
+        <i class="fas fa-globe"></i> Website Content
+      </div>
+      <div class="nav-section-label">Communication</div>
+      <div class="nav-item" onclick="switchPanel('email', this)">
+        <i class="fas fa-envelope"></i> Email Hub
+      </div>
+      <div class="nav-section-label">Management</div>
+      <div class="nav-item" onclick="switchPanel('clients', this)">
+        <i class="fas fa-users"></i> Client Directory
+      </div>
+      <div class="nav-item" onclick="switchPanel('team', this)">
+        <i class="fas fa-user-shield"></i> Team Access
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="userAvatar">PA</div>
+        <div class="user-details">
+          <p id="userName">Loading...</p>
+          <span id="userRole">Partner</span>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fas fa-sign-out-alt"></i> Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="topbar">
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="topbar-actions">
+        <a href="index.html" target="_blank" class="btn-sm btn-outline">
+          <i class="fas fa-external-link-alt"></i> View Website
+        </a>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- ─── DASHBOARD PANEL ─── -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-newspaper"></i></div>
+            <div class="stat-value" id="statPosts">0</div>
+            <div class="stat-label">Published Articles</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+            <div class="stat-value" id="statDrafts">0</div>
+            <div class="stat-label">Drafts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-value" id="statClients">0</div>
+            <div class="stat-label">Clients in Directory</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-envelope-open"></i></div>
+            <div class="stat-value" id="statEmails">0</div>
+            <div class="stat-label">Emails Sent</div>
+          </div>
+        </div>
+        <div class="recent-activity">
+          <div class="section-header">
+            <h3>Recent Activity</h3>
+          </div>
+          <div class="activity-list" id="activityList">
+            <div class="empty-state"><i class="fas fa-clock"></i><p>No recent activity yet.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── INSIGHTS / BLOG PANEL ─── -->
+      <div class="panel" id="panel-insights">
+        <div class="posts-toolbar">
+          <input type="text" class="search-input" placeholder="Search articles..." id="postSearch" oninput="filterPosts()">
+          <button class="btn-sm btn-royal" onclick="openPostModal()">
+            <i class="fas fa-plus"></i> New Article
+          </button>
+        </div>
+        <div class="posts-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="postsTableBody">
+              <tr><td colspan="5"><div class="empty-state"><i class="fas fa-pen-nib"></i><p>No articles yet. Create your first one.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ─── WEBSITE CONTENT PANEL ─── -->
+      <div class="panel" id="panel-website">
+        <div class="content-tabs">
+          <button class="content-tab active" onclick="switchContentTab('homepage', this)">Homepage</button>
+          <button class="content-tab" onclick="switchContentTab('about', this)">About Us</button>
+          <button class="content-tab" onclick="switchContentTab('services', this)">Services</button>
+        </div>
+
+        <!-- Homepage Tab -->
+        <div class="content-section active" id="tab-homepage">
+          <div class="content-card">
+            <h4>Hero Section</h4>
+            <div class="form-group">
+              <label>Main Tagline</label>
+              <input type="text" id="heroTagline" placeholder="Blending the age old wisdom with AI enabled marketplace.">
+            </div>
+            <div class="form-group">
+              <label>Sub-tagline / Description</label>
+              <textarea id="heroDesc" placeholder="Brief description shown below tagline..."></textarea>
+            </div>
+          </div>
+          <div class="content-card">
+            <h4>Key Statistics</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Years of Legacy</label>
+                <input type="text" id="statYears" placeholder="e.g. 37+">
+              </div>
+              <div class="form-group">
+                <label>Clients Served</label>
+                <input type="text" id="statClientsCount" placeholder="e.g. 500+">
+              </div>
+              <div class="form-group">
+                <label>CA Professionals</label>
+                <input type="text" id="statCAs" placeholder="e.g. 2">
+              </div>
+              <div class="form-group">
+                <label>Cities Served</label>
+                <input type="text" id="statCities" placeholder="e.g. 5+">
+              </div>
+            </div>
+            <button class="btn-sm btn-royal" onclick="saveHomepageContent()">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- About Tab -->
+        <div class="content-section" id="tab-about">
+          <div class="content-card">
+            <h4>Firm Story</h4>
+            <div class="form-group">
+              <label>Firm Origin Story</label>
+              <textarea id="firmStory" style="min-height:160px" placeholder="Write your firm's story..."></textarea>
+            </div>
+          </div>
+          <div class="content-card">
+            <h4>Managing Partner — CA. Prateek Ahuja</h4>
+            <div class="form-group">
+              <label>Bio</label>
+              <textarea id="bio1" placeholder="Partner bio..."></textarea>
+            </div>
+          </div>
+          <div class="content-card">
+            <h4>Senior Partner — CA. Dharmendra Kumar Ahuja</h4>
+            <div class="form-group">
+              <label>Bio</label>
+              <textarea id="bio2" placeholder="Partner bio..."></textarea>
+            </div>
+            <button class="btn-sm btn-royal" onclick="saveAboutContent()">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+          </div>
+        </div>
+
+        <!-- Services Tab -->
+        <div class="content-section" id="tab-services">
+          <div class="content-card">
+            <h4>Services (Edit Descriptions)</h4>
+            <div id="servicesEditor">
+              <!-- Dynamically populated -->
+            </div>
+            <button class="btn-sm btn-royal" onclick="saveServicesContent()">
+              <i class="fas fa-save"></i> Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── EMAIL HUB PANEL ─── -->
+      <div class="panel" id="panel-email">
+        <div class="preset-grid">
+          <div class="preset-card" onclick="openEmailModal('bill')">
+            <div class="preset-icon" style="background:rgba(26,58,107,0.08)">🧾</div>
+            <h4>Send Invoice</h4>
+            <p>Share bill with client</p>
+          </div>
+          <div class="preset-card" onclick="openEmailModal('birthday')">
+            <div class="preset-icon" style="background:rgba(201,168,76,0.1)">🎂</div>
+            <h4>Birthday Wish</h4>
+            <p>Warm wishes to client</p>
+          </div>
+          <div class="preset-card" onclick="openEmailModal('newsletter')">
+            <div class="preset-icon" style="background:rgba(46,125,82,0.1)">📰</div>
+            <h4>Newsletter</h4>
+            <p>Tax updates & news</p>
+          </div>
+          <div class="preset-card" onclick="openEmailModal('reminder')">
+            <div class="preset-icon" style="background:rgba(212,132,42,0.1)">⏰</div>
+            <h4>Deadline Reminder</h4>
+            <p>ITR, GST due dates</p>
+          </div>
+          <div class="preset-card" onclick="openEmailModal('document')">
+            <div class="preset-icon" style="background:rgba(26,58,107,0.08)">📁</div>
+            <h4>Document Request</h4>
+            <p>Request docs from client</p>
+          </div>
+          <div class="preset-card" onclick="openEmailModal('custom')">
+            <div class="preset-icon" style="background:rgba(44,44,44,0.06)">✉️</div>
+            <h4>Custom Email</h4>
+            <p>Compose from scratch</p>
+          </div>
+        </div>
+        <div class="recent-activity">
+          <div class="section-header">
+            <h3>Email History</h3>
+          </div>
+          <div id="emailHistory">
+            <div class="empty-state"><i class="fas fa-paper-plane"></i><p>No emails sent yet.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── CLIENT DIRECTORY PANEL ─── -->
+      <div class="panel" id="panel-clients">
+        <div class="posts-toolbar">
+          <input type="text" class="search-input" placeholder="Search clients..." id="clientSearch" oninput="filterClients()">
+          <button class="btn-sm btn-royal" onclick="openClientModal()">
+            <i class="fas fa-user-plus"></i> Add Client
+          </button>
+        </div>
+        <div class="posts-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Service Type</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody">
+              <tr><td colspan="5"><div class="empty-state"><i class="fas fa-user-friends"></i><p>No clients added yet.</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ─── TEAM PANEL ─── -->
+      <div class="panel" id="panel-team">
+        <div class="team-grid" id="teamGrid">
+          <!-- Populated dynamically -->
+        </div>
+        <div class="posts-table-wrap">
+          <div class="section-header">
+            <h3>Add Team Member</h3>
+          </div>
+          <div style="padding:24px">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="newMemberName" placeholder="CA. Name">
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="newMemberEmail" placeholder="member@pdahuja.com">
+              </div>
+              <div class="form-group">
+                <label>Role</label>
+                <select id="newMemberRole">
+                  <option value="staff">Staff</option>
+                  <option value="admin">Admin</option>
+                  <option value="partner">Partner</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Temporary Password</label>
+                <input type="password" id="newMemberPassword" placeholder="Min 8 characters">
+              </div>
+            </div>
+            <button class="btn-sm btn-royal" onclick="addTeamMember()">
+              <i class="fas fa-user-plus"></i> Create Login
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end page-content -->
+  </div><!-- end main-content -->
+</div><!-- end appShell -->
+
+<!-- ─── POST EDITOR MODAL ─── -->
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="postModalTitle">New Article</h3>
+      <button class="modal-close" onclick="closeModal('postModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editPostId">
+      <div class="form-group">
+        <label>Article Title</label>
+        <input type="text" id="postTitle" placeholder="e.g. Key Changes in GST for FY 2025-26">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <select id="postCategory">
+            <option value="GST">GST</option>
+            <option value="Income Tax">Income Tax</option>
+            <option value="Company Law">Company Law</option>
+            <option value="Audit">Audit & Assurance</option>
+            <option value="Business Advisory">Business Advisory</option>
+            <option value="Finance">Finance</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input type="text" id="postAuthor" placeholder="CA. Prateek Ahuja">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Excerpt (shown in listing)</label>
+        <textarea id="postExcerpt" style="min-height:70px" placeholder="Brief summary of the article (2-3 lines)..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Article Content</label>
+        <div class="editor-toolbar" id="editorToolbar">
+          <button class="editor-btn" onclick="execCmd('bold')"><b>B</b></button>
+          <button class="editor-btn" onclick="execCmd('italic')"><i>I</i></button>
+          <button class="editor-btn" onclick="execCmd('underline')"><u>U</u></button>
+          <button class="editor-btn" onclick="execCmd('insertUnorderedList')">• List</button>
+          <button class="editor-btn" onclick="execCmd('insertOrderedList')">1. List</button>
+          <button class="editor-btn" onclick="execCmd('formatBlock','H2')">H2</button>
+          <button class="editor-btn" onclick="execCmd('formatBlock','H3')">H3</button>
+          <button class="editor-btn" onclick="execCmd('formatBlock','P')">¶ Para</button>
+        </div>
+        <div class="editor-content" id="postContent" contenteditable="true"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-outline" onclick="savePost('draft')">
+        <i class="fas fa-save"></i> Save as Draft
+      </button>
+      <button class="btn-sm btn-royal" onclick="savePost('published')">
+        <i class="fas fa-globe"></i> Publish
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── CLIENT MODAL ─── -->
+<div class="modal-overlay" id="clientModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="clientModalTitle">Add Client</h3>
+      <button class="modal-close" onclick="closeModal('clientModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editClientId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client / Firm Name</label>
+          <input type="text" id="clientName" placeholder="Full name or firm name">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="clientEmail" placeholder="client@email.com">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="clientPhone" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label>Service Type</label>
+          <select id="clientService">
+            <option>Audit & Assurance</option>
+            <option>Tax Advisory & Compliance</option>
+            <option>GST Services</option>
+            <option>Company Law / MCA</option>
+            <option>Accounting & Bookkeeping</option>
+            <option>Business Advisory</option>
+            <option>Multiple Services</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Birthday (optional)</label>
+          <input type="date" id="clientBirthday">
+        </div>
+        <div class="form-group">
+          <label>PAN Number (optional)</label>
+          <input type="text" id="clientPAN" placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="clientNotes" style="min-height:70px" placeholder="Any internal notes about this client..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-outline" onclick="closeModal('clientModal')">Cancel</button>
+      <button class="btn-sm btn-royal" onclick="saveClient()">
+        <i class="fas fa-save"></i> Save Client
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── EMAIL MODAL ─── -->
+<div class="modal-overlay" id="emailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="emailModalTitle">Compose Email</h3>
+      <button class="modal-close" onclick="closeModal('emailModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>To (Email Address)</label>
+        <input type="email" id="emailTo" placeholder="client@email.com">
+      </div>
+      <div class="form-group">
+        <label>Subject</label>
+        <input type="text" id="emailSubject" placeholder="Subject line...">
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea id="emailBody" style="min-height:200px" placeholder="Type your message here..."></textarea>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:8px">
+        <i class="fas fa-info-circle"></i> Emails will be sent via EmailJS from info@pdahuja.com. Setup required — see instructions below.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm btn-outline" onclick="closeModal('emailModal')">Cancel</button>
+      <button class="btn-sm btn-royal" onclick="sendEmail()">
+        <i class="fas fa-paper-plane"></i> Send Email
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST CONTAINER ─── -->
+<div id="toastContainer"></div>
+
+<!-- ─── FIREBASE SDK ─── -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+// ─── FIREBASE CONFIG ───
+const firebaseConfig = {
+  apiKey: "AIzaSyDJmiiXiyFAlykyNNSfiIQlGSoNDTqTBjg",
+  authDomain: "pdahuja-website.firebaseapp.com",
+  projectId: "pdahuja-website",
+  storageBucket: "pdahuja-website.firebasestorage.app",
+  messagingSenderId: "38257599414",
+  appId: "1:38257599414:web:7c53c751b0529edcc45717",
+  measurementId: "G-3DNZ9MDTCJ"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ─── STATE ───
+let currentUser = null;
+let allPosts = [];
+let allClients = [];
+
+// ─── AUTH STATE ───
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appShell').style.display = 'flex';
+    const email = user.email;
+    const initials = email.split('@')[0].slice(0,2).toUpperCase();
+    document.getElementById('userAvatar').textContent = initials;
+    document.getElementById('userName').textContent = email.split('@')[0];
+    loadDashboard();
+    loadPosts();
+    loadClients();
+    loadTeam();
+    loadWebsiteContent();
+  } else {
+    currentUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('appShell').style.display = 'none';
+  }
+});
+
+// ─── LOGIN ───
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!email || !password) { showLoginError('Please enter email and password.'); return; }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-spinner"></span>';
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+    const msgs = {
+      'auth/user-not-found': 'No account found with this email.',
+      'auth/wrong-password': 'Incorrect password.',
+      'auth/invalid-email': 'Invalid email address.',
+      'auth/too-many-requests': 'Too many attempts. Please try again later.',
+    };
+    showLoginError(msgs[e.code] || 'Login failed. Please try again.');
+  }
+}
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+document.getElementById('loginPassword').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleLogin();
+});
+
+// ─── LOGOUT ───
+async function handleLogout() {
+  await auth.signOut();
+}
+
+// ─── NAVIGATION ───
+function switchPanel(panelId, navEl) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + panelId).classList.add('active');
+  navEl.classList.add('active');
+  const titles = {
+    dashboard: 'Dashboard',
+    insights: 'Insights & Blog',
+    website: 'Website Content',
+    email: 'Email Hub',
+    clients: 'Client Directory',
+    team: 'Team Access'
+  };
+  document.getElementById('pageTitle').textContent = titles[panelId] || panelId;
+}
+
+function switchContentTab(tabId, el) {
+  document.querySelectorAll('.content-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-' + tabId).classList.add('active');
+}
+
+// ─── DASHBOARD ───
+async function loadDashboard() {
+  try {
+    const postsSnap = await db.collection('posts').get();
+    let published = 0, drafts = 0;
+    postsSnap.forEach(d => { d.data().status === 'published' ? published++ : drafts++; });
+    document.getElementById('statPosts').textContent = published;
+    document.getElementById('statDrafts').textContent = drafts;
+    const clientSnap = await db.collection('clients').get();
+    document.getElementById('statClients').textContent = clientSnap.size;
+    const emailSnap = await db.collection('emailLog').get();
+    document.getElementById('statEmails').textContent = emailSnap.size;
+    loadActivity();
+  } catch(e) { console.error(e); }
+}
+
+async function loadActivity() {
+  const actList = document.getElementById('activityList');
+  try {
+    const snap = await db.collection('activity').orderBy('timestamp', 'desc').limit(8).get();
+    if (snap.empty) { actList.innerHTML = '<div class="empty-state"><i class="fas fa-clock"></i><p>No recent activity yet.</p></div>'; return; }
+    actList.innerHTML = '';
+    snap.forEach(d => {
+      const data = d.data();
+      const el = document.createElement('div');
+      el.className = 'activity-item';
+      const time = data.timestamp ? new Date(data.timestamp.toDate()).toLocaleString('en-IN', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+      el.innerHTML = `<div class="activity-dot"></div><div class="activity-text">${data.text}</div><div class="activity-time">${time}</div>`;
+      actList.appendChild(el);
+    });
+  } catch(e) { actList.innerHTML = '<div class="empty-state"><i class="fas fa-clock"></i><p>No recent activity yet.</p></div>'; }
+}
+
+async function logActivity(text) {
+  try { await db.collection('activity').add({ text, timestamp: firebase.firestore.FieldValue.serverTimestamp() }); }
+  catch(e) {}
+}
+
+// ─── POSTS ───
+async function loadPosts() {
+  try {
+    const snap = await db.collection('posts').orderBy('createdAt', 'desc').get();
+    allPosts = [];
+    snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
+    renderPostsTable(allPosts);
+  } catch(e) { console.error(e); }
+}
+
+function renderPostsTable(posts) {
+  const tbody = document.getElementById('postsTableBody');
+  if (!posts.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-pen-nib"></i><p>No articles yet. Create your first one.</p></div></td></tr>'; return; }
+  tbody.innerHTML = posts.map(p => `
+    <tr>
+      <td><strong>${p.title || '(Untitled)'}</strong></td>
+      <td>${p.category || '—'}</td>
+      <td>${p.createdAt ? new Date(p.createdAt.toDate()).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—'}</td>
+      <td><span class="badge badge-${p.status === 'published' ? 'published' : 'draft'}">${p.status === 'published' ? 'Published' : 'Draft'}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="btn-sm btn-outline" onclick="editPost('${p.id}')"><i class="fas fa-edit"></i></button>
+          <button class="btn-sm ${p.status === 'published' ? 'btn-gold' : 'btn-success'}" onclick="togglePublish('${p.id}','${p.status}')">${p.status === 'published' ? 'Unpublish' : 'Publish'}</button>
+          <button class="btn-sm btn-danger" onclick="deletePost('${p.id}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function filterPosts() {
+  const q = document.getElementById('postSearch').value.toLowerCase();
+  renderPostsTable(allPosts.filter(p => (p.title||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q)));
+}
+
+function openPostModal(post = null) {
+  document.getElementById('postModalTitle').textContent = post ? 'Edit Article' : 'New Article';
+  document.getElementById('editPostId').value = post ? post.id : '';
+  document.getElementById('postTitle').value = post ? post.title : '';
+  document.getElementById('postCategory').value = post ? post.category : 'GST';
+  document.getElementById('postAuthor').value = post ? post.author : 'CA. Prateek Ahuja';
+  document.getElementById('postExcerpt').value = post ? post.excerpt : '';
+  document.getElementById('postContent').innerHTML = post ? post.content : '';
+  document.getElementById('postModal').classList.add('open');
+}
+
+function editPost(id) {
+  const post = allPosts.find(p => p.id === id);
+  if (post) openPostModal(post);
+}
+
+async function savePost(status) {
+  const id = document.getElementById('editPostId').value;
+  const data = {
+    title: document.getElementById('postTitle').value.trim(),
+    category: document.getElementById('postCategory').value,
+    author: document.getElementById('postAuthor').value.trim(),
+    excerpt: document.getElementById('postExcerpt').value.trim(),
+    content: document.getElementById('postContent').innerHTML,
+    status,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if (!data.title) { showToast('Please enter a title.', 'error'); return; }
+  try {
+    if (id) {
+      await db.collection('posts').doc(id).update(data);
+      showToast('Article updated successfully.');
+      logActivity(`Article "${data.title}" was ${status === 'published' ? 'published' : 'saved as draft'}.`);
+    } else {
+      data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('posts').add(data);
+      showToast('Article ' + (status === 'published' ? 'published!' : 'saved as draft.'));
+      logActivity(`New article "${data.title}" created.`);
+    }
+    closeModal('postModal');
+    loadPosts();
+    loadDashboard();
+  } catch(e) { showToast('Error saving article.', 'error'); }
+}
+
+async function togglePublish(id, currentStatus) {
+  const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+  try {
+    await db.collection('posts').doc(id).update({ status: newStatus, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast(newStatus === 'published' ? 'Article published!' : 'Article unpublished.');
+    loadPosts(); loadDashboard();
+  } catch(e) { showToast('Error updating article.', 'error'); }
+}
+
+async function deletePost(id) {
+  if (!confirm('Delete this article? This cannot be undone.')) return;
+  try {
+    await db.collection('posts').doc(id).delete();
+    showToast('Article deleted.');
+    loadPosts(); loadDashboard();
+  } catch(e) { showToast('Error deleting.', 'error'); }
+}
+
+// ─── WEBSITE CONTENT ───
+async function loadWebsiteContent() {
+  try {
+    const doc = await db.collection('siteContent').doc('homepage').get();
+    if (doc.exists) {
+      const d = doc.data();
+      document.getElementById('heroTagline').value = d.tagline || '';
+      document.getElementById('heroDesc').value = d.description || '';
+      document.getElementById('statYears').value = d.years || '';
+      document.getElementById('statClientsCount').value = d.clients || '';
+      document.getElementById('statCAs').value = d.cas || '';
+      document.getElementById('statCities').value = d.cities || '';
+    }
+    const about = await db.collection('siteContent').doc('about').get();
+    if (about.exists) {
+      const d = about.data();
+      document.getElementById('firmStory').value = d.story || '';
+      document.getElementById('bio1').value = d.bio1 || '';
+      document.getElementById('bio2').value = d.bio2 || '';
+    }
+    loadServicesEditor();
+  } catch(e) {}
+}
+
+async function saveHomepageContent() {
+  const data = {
+    tagline: document.getElementById('heroTagline').value,
+    description: document.getElementById('heroDesc').value,
+    years: document.getElementById('statYears').value,
+    clients: document.getElementById('statClientsCount').value,
+    cas: document.getElementById('statCAs').value,
+    cities: document.getElementById('statCities').value,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try {
+    await db.collection('siteContent').doc('homepage').set(data, { merge: true });
+    showToast('Homepage content saved!');
+    logActivity('Homepage content updated.');
+  } catch(e) { showToast('Error saving.', 'error'); }
+}
+
+async function saveAboutContent() {
+  const data = {
+    story: document.getElementById('firmStory').value,
+    bio1: document.getElementById('bio1').value,
+    bio2: document.getElementById('bio2').value,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  try {
+    await db.collection('siteContent').doc('about').set(data, { merge: true });
+    showToast('About content saved!');
+    logActivity('About Us section updated.');
+  } catch(e) { showToast('Error saving.', 'error'); }
+}
+
+const defaultServices = [
+  'Audit & Assurance', 'Tax Advisory & Compliance', 'GST Services',
+  'Company Law / MCA Filings', 'Accounting & Bookkeeping',
+  'Business Advisory & Consulting', 'Internal Control Systems'
+];
+async function loadServicesEditor() {
+  const container = document.getElementById('servicesEditor');
+  let services = defaultServices;
+  try {
+    const doc = await db.collection('siteContent').doc('services').get();
+    if (doc.exists && doc.data().list) services = doc.data().list;
+  } catch(e) {}
+  container.innerHTML = services.map((s, i) => `
+    <div class="form-group">
+      <label>Service ${i+1}</label>
+      <input type="text" class="svc-input" value="${s}" placeholder="Service name">
+    </div>`).join('');
+}
+
+async function saveServicesContent() {
+  const inputs = document.querySelectorAll('.svc-input');
+  const list = Array.from(inputs).map(i => i.value.trim()).filter(Boolean);
+  try {
+    await db.collection('siteContent').doc('services').set({ list, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast('Services updated!');
+  } catch(e) { showToast('Error saving.', 'error'); }
+}
+
+// ─── CLIENTS ───
+async function loadClients() {
+  try {
+    const snap = await db.collection('clients').orderBy('name').get();
+    allClients = [];
+    snap.forEach(d => allClients.push({ id: d.id, ...d.data() }));
+    renderClientsTable(allClients);
+  } catch(e) { console.error(e); }
+}
+
+function renderClientsTable(clients) {
+  const tbody = document.getElementById('clientsTableBody');
+  if (!clients.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-user-friends"></i><p>No clients added yet.</p></div></td></tr>'; return; }
+  tbody.innerHTML = clients.map(c => `
+    <tr>
+      <td><strong>${c.name || '—'}</strong></td>
+      <td>${c.email || '—'}</td>
+      <td>${c.phone || '—'}</td>
+      <td>${c.service || '—'}</td>
+      <td>
+        <div class="table-actions">
+          <button class="btn-sm btn-outline" onclick="editClient('${c.id}')"><i class="fas fa-edit"></i></button>
+          <button class="btn-sm btn-royal" onclick="emailClient('${c.email}')"><i class="fas fa-envelope"></i></button>
+          <button class="btn-sm btn-danger" onclick="deleteClient('${c.id}')"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+function filterClients() {
+  const q = document.getElementById('clientSearch').value.toLowerCase();
+  renderClientsTable(allClients.filter(c => (c.name||'').toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q)));
+}
+
+function openClientModal(client = null) {
+  document.getElementById('clientModalTitle').textContent = client ? 'Edit Client' : 'Add Client';
+  document.getElementById('editClientId').value = client ? client.id : '';
+  document.getElementById('clientName').value = client ? client.name : '';
+  document.getElementById('clientEmail').value = client ? client.email : '';
+  document.getElementById('clientPhone').value = client ? client.phone : '';
+  document.getElementById('clientService').value = client ? client.service : 'Tax Advisory & Compliance';
+  document.getElementById('clientBirthday').value = client ? client.birthday : '';
+  document.getElementById('clientPAN').value = client ? client.pan : '';
+  document.getElementById('clientNotes').value = client ? client.notes : '';
+  document.getElementById('clientModal').classList.add('open');
+}
+
+function editClient(id) {
+  const c = allClients.find(c => c.id === id);
+  if (c) openClientModal(c);
+}
+
+async function saveClient() {
+  const id = document.getElementById('editClientId').value;
+  const data = {
+    name: document.getElementById('clientName').value.trim(),
+    email: document.getElementById('clientEmail').value.trim(),
+    phone: document.getElementById('clientPhone').value.trim(),
+    service: document.getElementById('clientService').value,
+    birthday: document.getElementById('clientBirthday').value,
+    pan: document.getElementById('clientPAN').value.toUpperCase().trim(),
+    notes: document.getElementById('clientNotes').value.trim(),
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if (!data.name) { showToast('Client name is required.', 'error'); return; }
+  try {
+    if (id) { await db.collection('clients').doc(id).update(data); showToast('Client updated.'); }
+    else { data.createdAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection('clients').add(data); showToast('Client added.'); logActivity(`Client "${data.name}" added to directory.`); }
+    closeModal('clientModal');
+    loadClients(); loadDashboard();
+  } catch(e) { showToast('Error saving client.', 'error'); }
+}
+
+async function deleteClient(id) {
+  if (!confirm('Remove this client from the directory?')) return;
+  try { await db.collection('clients').doc(id).delete(); showToast('Client removed.'); loadClients(); loadDashboard(); }
+  catch(e) { showToast('Error.', 'error'); }
+}
+
+function emailClient(email) {
+  document.getElementById('emailTo').value = email || '';
+  document.getElementById('emailSubject').value = '';
+  document.getElementById('emailBody').value = '';
+  document.getElementById('emailModalTitle').textContent = 'Compose Email';
+  document.getElementById('emailModal').classList.add('open');
+}
+
+// ─── EMAIL HUB ───
+const emailPresets = {
+  bill: { subject: 'Invoice from P D Ahuja & Co.', body: 'Dear [Client Name],\n\nPlease find attached your invoice for the services rendered.\n\nFor any queries, feel free to reach us at info@pdahuja.com.\n\nWarm Regards,\nCA. Prateek Ahuja\nP D Ahuja & Co., Chartered Accountants\nMeerut | info@pdahuja.com' },
+  birthday: { subject: 'Warm Birthday Wishes!', body: 'Dear [Client Name],\n\nWishing you a wonderful birthday and a year filled with joy, good health, and prosperity!\n\nWarm Regards,\nCA. Prateek Ahuja\nP D Ahuja & Co., Chartered Accountants' },
+  newsletter: { subject: 'Tax & Compliance Update — [Month Year]', body: 'Dear [Client Name],\n\nHere are the key tax and compliance updates for this period:\n\n1. \n2. \n3. \n\nFeel free to reach out if you have any questions.\n\nWarm Regards,\nCA. Prateek Ahuja\nP D Ahuja & Co., Chartered Accountants' },
+  reminder: { subject: 'Compliance Deadline Reminder', body: 'Dear [Client Name],\n\nThis is a friendly reminder about the upcoming compliance deadline:\n\nDeadline: [Date]\nCompliance: [ITR / GST Return / TDS / Other]\n\nKindly ensure all necessary documents are submitted to us at the earliest.\n\nWarm Regards,\nCA. Prateek Ahuja\nP D Ahuja & Co., Chartered Accountants' },
+  document: { subject: 'Document Submission Request', body: 'Dear [Client Name],\n\nWe require the following documents for processing your [ITR/GST/Audit]:\n\n1. \n2. \n3. \n\nKindly share these at your earliest convenience.\n\nWarm Regards,\nCA. Prateek Ahuja\nP D Ahuja & Co., Chartered Accountants' },
+  custom: { subject: '', body: '' }
+};
+
+function openEmailModal(type) {
+  const preset = emailPresets[type] || emailPresets.custom;
+  document.getElementById('emailModalTitle').textContent = { bill:'Send Invoice', birthday:'Birthday Wishes', newsletter:'Newsletter', reminder:'Deadline Reminder', document:'Document Request', custom:'Compose Email' }[type] || 'Compose Email';
+  document.getElementById('emailTo').value = '';
+  document.getElementById('emailSubject').value = preset.subject;
+  document.getElementById('emailBody').value = preset.body;
+  document.getElementById('emailModal').classList.add('open');
+}
+
+async function sendEmail() {
+  const to = document.getElementById('emailTo').value.trim();
+  const subject = document.getElementById('emailSubject').value.trim();
+  const body = document.getElementById('emailBody').value.trim();
+  if (!to || !subject || !body) { showToast('Please fill all email fields.', 'error'); return; }
+  // Log the email to Firestore (actual sending requires EmailJS setup)
+  try {
+    await db.collection('emailLog').add({
+      to, subject, body,
+      sentAt: firebase.firestore.FieldValue.serverTimestamp(),
+      sentBy: currentUser.email
+    });
+    await logActivity(`Email sent to ${to}: "${subject}"`);
+    showToast('Email logged. ⚠️ To actually send emails, configure EmailJS — see Admin Guide.', 'warning');
+    closeModal('emailModal');
+    loadDashboard();
+  } catch(e) { showToast('Error logging email.', 'error'); }
+}
+
+// ─── TEAM ───
+async function loadTeam() {
+  const grid = document.getElementById('teamGrid');
+  try {
+    const snap = await db.collection('team').get();
+    if (snap.empty) {
+      // Add default partners if empty
+      await db.collection('team').add({ name: 'CA. Prateek Ahuja', email: 'prateek@pdahuja.com', role: 'partner', designation: 'Managing Partner' });
+      await db.collection('team').add({ name: 'CA. Dharmendra Kumar Ahuja', email: 'info@pdahuja.com', role: 'partner', designation: 'Senior Partner' });
+      return loadTeam();
+    }
+    grid.innerHTML = '';
+    snap.forEach(d => {
+      const m = d.data();
+      const initials = (m.name||'').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+      const roleClass = { partner:'role-partner', admin:'role-admin', staff:'role-staff' }[m.role] || 'role-staff';
+      const roleLabel = { partner:'Partner', admin:'Admin', staff:'Staff' }[m.role] || 'Staff';
+      const el = document.createElement('div');
+      el.className = 'team-card';
+      el.innerHTML = `
+        <div class="team-avatar">${initials}</div>
+        <div class="team-info">
+          <h4>${m.name}</h4>
+          <p>${m.email}</p>
+          <span class="role-badge ${roleClass}">${roleLabel}</span>
+          ${m.designation ? `<p style="font-size:11px;margin-top:6px;color:var(--text-muted)">${m.designation}</p>` : ''}
+        </div>`;
+      grid.appendChild(el);
+    });
+  } catch(e) { console.error(e); }
+}
+
+async function addTeamMember() {
+  const name = document.getElementById('newMemberName').value.trim();
+  const email = document.getElementById('newMemberEmail').value.trim();
+  const role = document.getElementById('newMemberRole').value;
+  const password = document.getElementById('newMemberPassword').value;
+  if (!name || !email || !password) { showToast('Please fill all fields.', 'error'); return; }
+  if (password.length < 8) { showToast('Password must be at least 8 characters.', 'error'); return; }
+  try {
+    // Note: Creating Firebase users from client SDK logs out current user.
+    // This saves the request to Firestore for admin to create later via Firebase Console.
+    await db.collection('team').add({ name, email, role, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    await db.collection('pendingUsers').add({ name, email, role, password, requestedBy: currentUser.email, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    showToast(`${name} added to team. Go to Firebase Console → Authentication to create their login.`, 'warning');
+    document.getElementById('newMemberName').value = '';
+    document.getElementById('newMemberEmail').value = '';
+    document.getElementById('newMemberPassword').value = '';
+    loadTeam();
+  } catch(e) { showToast('Error adding member.', 'error'); }
+}
+
+// ─── EDITOR UTILS ───
+function execCmd(cmd, val = null) {
+  document.getElementById('postContent').focus();
+  document.execCommand(cmd, false, val);
+}
+
+// ─── MODALS ───
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// ─── TOAST ───
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icons = { success: '✓', error: '✕', warning: '⚠' };
+  toast.innerHTML = `<span style="font-size:16px;font-weight:700">${icons[type]||'✓'}</span> ${msg}`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, type === 'warning' ? 5000 : 3000);
+}
+
+// Enter key on login
+document.getElementById('loginEmail').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('loginPassword').focus(); });
+</script>
+</body>
+</html>
