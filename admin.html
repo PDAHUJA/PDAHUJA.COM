@@ -1380,6 +1380,7 @@ function switchPanel(panelId, navEl) {
     team: 'Team Access'
   };
   document.getElementById('pageTitle').textContent = titles[panelId] || panelId;
+  if (panelId === 'email') loadEmailHistory();
 }
 
 function switchContentTab(tabId, el) {
@@ -1718,18 +1719,84 @@ async function sendEmail() {
   const subject = document.getElementById('emailSubject').value.trim();
   const body = document.getElementById('emailBody').value.trim();
   if (!to || !subject || !body) { showToast('Please fill all email fields.', 'error'); return; }
-  // Log the email to Firestore (actual sending requires EmailJS setup)
+
+  // Validate email format
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)) { showToast('Please enter a valid email address.', 'error'); return; }
+
+  const sendBtn = document.querySelector('#emailModal .btn-royal');
+  sendBtn.disabled = true;
+  sendBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
+
   try {
-    await db.collection('emailLog').add({
-      to, subject, body,
-      sentAt: firebase.firestore.FieldValue.serverTimestamp(),
-      sentBy: currentUser.email
+    // Send via Brevo API
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'api-key': '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'
+      },
+      body: JSON.stringify({
+        sender: { name: 'P D Ahuja & Co.', email: 'info@pdahuja.com' },
+        to: [{ email: to }],
+        subject: subject,
+        textContent: body,
+        htmlContent: `<div style="font-family:Georgia,serif;font-size:15px;line-height:1.7;color:#2c2c2c;max-width:600px;margin:0 auto;padding:32px 24px">
+          ${body.replace(/\n/g, '<br>')}
+          <hr style="margin:32px 0;border:none;border-top:1px solid #e0ddd8">
+          <p style="font-size:12px;color:#999">This email was sent from P D Ahuja & Co., Chartered Accountants, Meerut. For queries: info@pdahuja.com</p>
+        </div>`
+      })
     });
-    await logActivity(`Email sent to ${to}: "${subject}"`);
-    showToast('Email logged. ⚠️ To actually send emails, configure EmailJS — see Admin Guide.', 'warning');
-    closeModal('emailModal');
-    loadDashboard();
-  } catch(e) { showToast('Error logging email.', 'error'); }
+
+    if (response.ok) {
+      // Log to Firestore
+      await db.collection('emailLog').add({
+        to, subject, body,
+        sentAt: firebase.firestore.FieldValue.serverTimestamp(),
+        sentBy: currentUser.email,
+        status: 'sent'
+      });
+      await logActivity(`Email sent to ${to}: "${subject}"`);
+      showToast('Email sent successfully from info@pdahuja.com!');
+      closeModal('emailModal');
+      loadDashboard();
+      loadEmailHistory();
+    } else {
+      const err = await response.json();
+      console.error(err);
+      // Fallback — log but warn
+      await db.collection('emailLog').add({ to, subject, body, sentAt: firebase.firestore.FieldValue.serverTimestamp(), sentBy: currentUser.email, status: 'failed' });
+      showToast('Email sending failed. Domain may not be verified yet in Brevo.', 'error');
+    }
+  } catch(e) {
+    console.error(e);
+    showToast('Network error. Check internet connection.', 'error');
+  } finally {
+    sendBtn.disabled = false;
+    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Email';
+  }
+}
+
+// ─── EMAIL HISTORY ───
+async function loadEmailHistory() {
+  const container = document.getElementById('emailHistory');
+  try {
+    const snap = await db.collection('emailLog').orderBy('sentAt', 'desc').limit(20).get();
+    if (snap.empty) { container.innerHTML = '<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No emails sent yet.</p></div>'; return; }
+    const rows = [];
+    snap.forEach(d => {
+      const e = d.data();
+      const time = e.sentAt ? new Date(e.sentAt.toDate()).toLocaleString('en-IN', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+      const statusColor = e.status === 'sent' ? 'var(--success)' : 'var(--error)';
+      rows.push(`<div class="activity-item">
+        <div class="activity-dot" style="background:${statusColor}"></div>
+        <div class="activity-text"><strong>${e.to}</strong> — ${e.subject}</div>
+        <div class="activity-time">${time}</div>
+      </div>`);
+    });
+    container.innerHTML = rows.join('');
+  } catch(e) { container.innerHTML = '<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No emails sent yet.</p></div>'; }
 }
 
 // ─── TEAM ───
