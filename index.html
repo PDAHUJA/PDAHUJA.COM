@@ -49,14 +49,18 @@ nav {
 .nav-dropdown { position: relative; }
 .nav-dropdown > a::after { content: ' ▾'; font-size: 0.65rem; }
 .nav-dropdown-menu {
-  display: none; position: absolute; top: calc(100% + 10px); left: 50%;
+  display: none; position: absolute; top: 100%; left: 50%;
   transform: translateX(-50%); background: #fff; border: 1px solid var(--gray-200);
   border-radius: 10px; box-shadow: 0 12px 40px rgba(30,58,138,0.14);
   min-width: 248px; padding: 8px 0; z-index: 2000;
-  animation: dropDown 0.18s ease;
+  padding-top: 16px; margin-top: 0;
+}
+/* Bridge gap so menu stays open when moving mouse down */
+.nav-dropdown-menu::before {
+  content: ''; position: absolute; top: -10px; left: 0; right: 0; height: 10px;
 }
 @keyframes dropDown { from { opacity:0; transform: translateX(-50%) translateY(-6px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
-.nav-dropdown:hover .nav-dropdown-menu { display: block; }
+.nav-dropdown:hover .nav-dropdown-menu { display: block; animation: dropDown 0.18s ease; }
 .nav-dropdown-menu a { display: block; padding: 9px 18px; font-size: 0.82rem; color: var(--gray-700); font-weight: 400; border-radius: 0; white-space: nowrap; transition: background 0.15s, color 0.15s; background: none; }
 .nav-dropdown-menu a:hover { background: var(--blue-lt); color: var(--blue); }
 
@@ -658,7 +662,7 @@ function openFirebaseArticle(id) {
 
 async function loadFirebaseInsights() {
   try {
-    var snap = await firebase.firestore().collection('posts').where('status','==','published').orderBy('createdAt','desc').get();
+    var snap = await firebase.firestore().collection('posts').where('status','==','published').get();
     var fbArticles = [];
     snap.forEach(function(d) { var data = d.data(); data.firestoreId = d.id; window._fbArticles[d.id] = data; fbArticles.push(data); });
     renderInsights(fbArticles.concat(ARTICLES));
