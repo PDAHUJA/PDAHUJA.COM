@@ -575,11 +575,7 @@ ARTICLE_BODIES[6] = '<h2>Choosing the Right Business Structure</h2><p>For most e
 
 /* SERVICE ANCHOR NAVIGATION */
 function showServiceAnchor(anchorId) {
-  showPage('services');
-  setTimeout(function() {
-    var el = document.getElementById('svc-' + anchorId);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 200);
+  window.location.hash = 'services/' + anchorId;
 }
 
 /* RENDER: HOME SERVICES */
@@ -646,19 +642,33 @@ function renderInsights(articles) {
 }
 
 function openFirebaseArticle(id) {
+  window.location.hash = 'article/fb-' + id;
+}
+
+function _renderFirebaseArticle(id) {
   var article = window._fbArticles[id];
-  if (!article) return;
+  if (!article) {
+    try {
+      firebase.firestore().collection('posts').doc(id).get().then(function(doc) {
+        if (doc.exists) { var data = doc.data(); data.firestoreId = id; window._fbArticles[id] = data; _renderFirebaseArticle(id); }
+      });
+    } catch(e) {}
+    return;
+  }
   var dateStr = article.createdAt ? new Date(article.createdAt.seconds * 1000).toLocaleDateString('en-IN', {day:'2-digit',month:'long',year:'numeric'}) : '';
+  var shareUrl = window.location.origin + window.location.pathname + '#article/fb-' + id;
   var html = '<div class="article-hero"><div class="article-hero-inner">';
   html += '<div class="article-cat">' + (article.category||'General') + '</div>';
   html += '<h1 class="article-title">' + article.title + '</h1>';
-  html += '<div class="article-meta"><span>&#128197; ' + dateStr + '</span><span>&#9997; ' + (article.author||'P D Ahuja &amp; Co.') + '</span></div>';
+  html += '<div class="article-meta"><span>&#128197; ' + dateStr + '</span><span>&#9997; ' + (article.author||'P D Ahuja &amp; Co.') + '</span>';
+  html += ' <button onclick="copyShareLink(\'' + shareUrl + '\')" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:4px 12px;border-radius:20px;font-family:Jost,sans-serif;font-size:0.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px">&#128279; Copy Link</button></div>';
   html += '</div></div><div class="article-body-wrap"><div class="article-body">' + (article.content||'<p>Content coming soon.</p>') + '</div>';
   html += '<div class="article-cta"><h3>Need Professional Advice?</h3><p>Our team is ready to help you navigate these changes.</p>';
   html += '<button class="btn-gold" onclick="showPage(\'help\')">Get In Touch &rarr;</button></div></div>';
   document.getElementById('articleContent').innerHTML = html;
-  showPage('article');
+  _showPageOnly('article');
 }
+
 
 async function loadFirebaseInsights() {
   try {
@@ -671,24 +681,33 @@ async function loadFirebaseInsights() {
 
 /* OPEN STATIC ARTICLE */
 function openArticle(id) {
+  window.location.hash = 'article/static-' + id;
+}
+
+function _renderStaticArticle(id) {
   var article = null;
-  for (var i = 0; i < ARTICLES.length; i++) { if (ARTICLES[i].id === id) { article = ARTICLES[i]; break; } }
+  for (var j = 0; j < ARTICLES.length; j++) { if (ARTICLES[j].id == id) { article = ARTICLES[j]; break; } }
   if (!article) return;
   var body = ARTICLE_BODIES[id] || '<p>Article content coming soon.</p>';
+  var shareUrl = window.location.origin + window.location.pathname + '#article/static-' + id;
   var html = '<div class="article-hero"><div class="article-hero-inner">';
   html += '<div class="article-cat">' + article.category + '</div>';
   html += '<h1 class="article-title">' + article.title + '</h1>';
-  html += '<div class="article-meta"><span>&#128197; ' + article.date + '</span><span>&#9200; ' + article.readTime + '</span><span>&#9997; P D Ahuja &amp; Co.</span></div>';
+  html += '<div class="article-meta"><span>&#128197; ' + article.date + '</span><span>&#9200; ' + article.readTime + '</span><span>&#9997; P D Ahuja &amp; Co.</span>';
+  html += ' <button onclick="copyShareLink(\'' + shareUrl + '\')" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:4px 12px;border-radius:20px;font-family:Jost,sans-serif;font-size:0.75rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px">&#128279; Copy Link</button></div>';
   html += '</div></div><div class="article-body-wrap"><div class="article-body">' + body + '</div>';
   html += '<div class="article-cta"><h3>Need Professional Advice?</h3><p>Our team is ready to help you navigate these changes and plan accordingly.</p>';
   html += '<button class="btn-gold" onclick="showPage(\'help\')">Get In Touch &rarr;</button></div></div>';
   document.getElementById('articleContent').innerHTML = html;
-  showPage('article');
+  _showPageOnly('article');
 }
+
 
 /* NAVIGATION */
 var ALL_PAGES = ['home','services','insights','article','featured','about','help'];
-function showPage(pageId) {
+
+// Internal: just switches the visible page, no hash change
+function _showPageOnly(pageId) {
   for (var i = 0; i < ALL_PAGES.length; i++) {
     var pg = document.getElementById('page-' + ALL_PAGES[i]); if (pg) pg.classList.remove('active');
     var nv = document.getElementById('nav-' + ALL_PAGES[i]); if (nv) nv.classList.remove('active');
@@ -698,6 +717,65 @@ function showPage(pageId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   setTimeout(function() { triggerReveal(); }, 150);
 }
+
+// Public: updates hash which triggers routing
+function showPage(pageId) {
+  window.location.hash = pageId;
+}
+
+// Copy share link to clipboard
+function copyShareLink(url) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function() {
+      showShareToast();
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    showShareToast();
+  }
+}
+function showShareToast() {
+  var t = document.createElement('div');
+  t.textContent = '🔗 Link copied to clipboard!';
+  t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0D1B45;color:#fff;padding:12px 24px;border-radius:8px;font-family:Jost,sans-serif;font-size:14px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,0.2)';
+  document.body.appendChild(t);
+  setTimeout(function() { t.style.opacity='0'; t.style.transition='opacity 0.3s'; setTimeout(function(){t.remove();},300); }, 2500);
+}
+
+// HASH ROUTER — reads URL hash and navigates to correct page/article
+function routeFromHash() {
+  var hash = window.location.hash.replace('#', '') || 'home';
+  var parts = hash.split('/');
+  var section = parts[0];
+  var param = parts[1] || '';
+
+  if (section === 'article') {
+    if (param.indexOf('fb-') === 0) {
+      var fbId = param.replace('fb-', '');
+      _showPageOnly('article');
+      _renderFirebaseArticle(fbId);
+    } else if (param.indexOf('static-') === 0) {
+      var staticId = parseInt(param.replace('static-', ''));
+      _showPageOnly('article');
+      _renderStaticArticle(staticId);
+    }
+  } else if (section === 'services' && param) {
+    _showPageOnly('services');
+    setTimeout(function() {
+      var el = document.getElementById('svc-' + param);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  } else if (ALL_PAGES.indexOf(section) !== -1) {
+    _showPageOnly(section);
+  } else {
+    _showPageOnly('home');
+  }
+}
+
+// Listen for hash changes (back/forward button support)
+window.addEventListener('hashchange', routeFromHash);
 
 /* SCROLL REVEAL */
 var revealObserver = null;
@@ -761,7 +839,8 @@ document.addEventListener('DOMContentLoaded', function() {
   renderHomeServices();
   renderServicesDetail();
   renderInsights(ARTICLES); // show static articles immediately
-  triggerReveal();
+  // Route after a short delay to allow Firebase articles to load
+  setTimeout(function() { routeFromHash(); }, 100);
 });
 </script>
 
