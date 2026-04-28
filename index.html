@@ -834,6 +834,24 @@ function loadFirestoreContent() {
   try {
     var db = firebase.firestore();
 
+    // Load homepage content (hero text, stats)
+    db.collection('siteContent').doc('homepage').get().then(function(doc) {
+      if (!doc.exists) return;
+      var d = doc.data();
+      if (d.badge && document.getElementById('heroBadge')) document.getElementById('heroBadge').innerHTML = d.badge;
+      if (d.tagline && document.getElementById('heroTagline')) document.getElementById('heroTagline').innerHTML = d.tagline;
+      if (d.sub && document.getElementById('heroSub')) document.getElementById('heroSub').innerHTML = d.sub;
+      if (d.heritage && document.getElementById('heroHeritage')) document.getElementById('heroHeritage').innerHTML = d.heritage;
+      if (d.stat1n && document.getElementById('stat1n')) document.getElementById('stat1n').textContent = d.stat1n;
+      if (d.stat1l && document.getElementById('stat1l')) document.getElementById('stat1l').textContent = d.stat1l;
+      if (d.stat2n && document.getElementById('stat2n')) document.getElementById('stat2n').textContent = d.stat2n;
+      if (d.stat2l && document.getElementById('stat2l')) document.getElementById('stat2l').textContent = d.stat2l;
+      if (d.stat3n && document.getElementById('stat3n')) document.getElementById('stat3n').textContent = d.stat3n;
+      if (d.stat3l && document.getElementById('stat3l')) document.getElementById('stat3l').textContent = d.stat3l;
+      if (d.stat4n && document.getElementById('stat4n')) document.getElementById('stat4n').textContent = d.stat4n;
+      if (d.stat4l && document.getElementById('stat4l')) document.getElementById('stat4l').textContent = d.stat4l;
+    }).catch(function(){});
+
     // Load team
     db.collection('siteContent').doc('team').get().then(function(doc) {
       var partners = (doc.exists && doc.data().partners && doc.data().partners.length) ? doc.data().partners : DEFAULT_TEAM;
@@ -875,7 +893,7 @@ function loadFirestoreContent() {
     }).catch(function(){ initNewsFeed(null); });
 
     // Load insights from Firebase posts
-    db.collection('posts').where('published','==',true).orderBy('createdAt','desc').get().then(function(snap) {
+    db.collection('posts').where('status','==','published').orderBy('createdAt','desc').get().then(function(snap) {
       if (snap.empty) { renderInsights(ARTICLES); return; }
       var fbArticles = [];
       snap.forEach(function(doc) {
