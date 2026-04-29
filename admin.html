@@ -161,6 +161,7 @@ tr:hover td{background:var(--off-white);}
 
 /* TOGGLE SWITCH */
 .toggle-wrap{display:flex;align-items:center;gap:8px;}
+.toggle-cell{min-width:56px;}
 .toggle{position:relative;width:40px;height:22px;}
 .toggle input{opacity:0;width:0;height:0;}
 .toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--mid-grey);transition:.3s;border-radius:22px;}
@@ -280,7 +281,10 @@ tr:hover td{background:var(--off-white);}
       <div class="panel" id="panel-insights">
         <div class="posts-toolbar">
           <input type="text" class="search-input" placeholder="Search articles..." id="postSearch" oninput="filterPosts()">
-          <button class="btn-sm btn-royal" onclick="openPostModal()"><i class="fas fa-plus"></i> New Article</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-outline" onclick="seedStaticArticles()" title="Import the 6 static articles from the website into Firestore so you can edit them"><i class="fas fa-download"></i> Import Static Articles</button>
+            <button class="btn-sm btn-royal" onclick="openPostModal()"><i class="fas fa-plus"></i> New Article</button>
+          </div>
         </div>
         <div class="posts-table-wrap">
           <table>
@@ -957,17 +961,25 @@ function getCatClass(cat) {
 }
 function renderNewsTable() {
   const tbody = document.getElementById('newsTableBody');
-  if (!allNewsItems.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items yet.</p></div></td></tr>'; return; }
-  tbody.innerHTML = allNewsItems.map(n => {
+  if (!allNewsItems.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items yet. Use "+ Add News Item" to get started.</p></div></td></tr>'; return; }
+  let rows = '';
+  allNewsItems.forEach(function(n) {
     const dateStr = n.date && n.date.toDate ? n.date.toDate().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-    return `<tr>
-      <td style="max-width:400px"><strong>${n.title||'—'}</strong></td>
-      <td><span class="news-badge ${getCatClass(n.category)}">${n.category||'—'}</span></td>
-      <td>${dateStr}</td>
-      <td><label class="toggle"><input type="checkbox" ${n.active?'checked':''} onchange="toggleNewsActive('${n.id}',this.checked)"><span class="toggle-slider"></span></label></td>
-      <td><button class="btn-sm btn-danger" onclick="deleteNewsItem('${n.id}')"><i class="fas fa-trash"></i></button></td>
-    </tr>`;
-  }).join('');
+    const isActive = n.active !== false;
+    const toggleBg = isActive ? '#2e7d52' : '#ccc';
+    const knobLeft = isActive ? '21px' : '3px';
+    rows += '<tr>';
+    rows += '<td style="max-width:400px"><strong>' + (n.title||'—') + '</strong></td>';
+    rows += '<td><span class="news-badge ' + getCatClass(n.category) + '">' + (n.category||'—') + '</span></td>';
+    rows += '<td>' + dateStr + '</td>';
+    rows += '<td><div style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;" onclick="toggleNewsActive('' + n.id + '',' + (!isActive) + ')">';
+    rows += '<div style="position:absolute;inset:0;background:' + toggleBg + ';border-radius:22px;transition:background .3s;"></div>';
+    rows += '<div style="position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:' + knobLeft + ';transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>';
+    rows += '</div></td>';
+    rows += '<td><button class="btn-sm btn-danger" onclick="deleteNewsItem('' + n.id + '')"><i class="fas fa-trash"></i></button></td>';
+    rows += '</tr>';
+  });
+  tbody.innerHTML = rows;
 }
 function openNewsModal() {
   document.getElementById('newsTitle').value = '';
@@ -1066,6 +1078,44 @@ async function loadEmailHistory() {
     });
     container.innerHTML = rows.join('');
   } catch(e) { container.innerHTML = '<div class="empty-state"><i class="fas fa-paper-plane"></i><p>No emails sent yet.</p></div>'; }
+}
+
+
+/* ─── SEED STATIC ARTICLES ─── */
+const STATIC_ARTICLES_DATA = [
+  {title:'Key Changes in GST Return Filing for FY 2024-25: What Businesses Must Know',category:'GST',date:'March 2025',readTime:'6 min read',excerpt:'The GST Council has approved significant changes to GSTR-1, GSTR-3B, and ITC claims. We break down what these mean for your compliance calendar.',content:'<h2>What\'s New in GST Return Filing?</h2><p>The GST Council continues to refine the compliance framework, and FY 2024-25 has brought some of the most impactful structural changes since GST\'s inception.</p><h2>GSTR-1A — The Amendment Return</h2><p>One of the most significant introductions is <strong>GSTR-1A</strong>, an amendment return that allows taxpayers to revise details in GSTR-1 before the filing of GSTR-3B for the same period.</p>'},
+  {title:'Union Budget 2025: Key Tax Implications for Individuals and Corporates',category:'Income Tax',date:'February 2025',readTime:'7 min read',excerpt:'A comprehensive analysis of the Union Budget 2025 proposals — revised tax slabs, capital gains changes, and new deduction provisions explained simply.',content:'<h2>Overview of Budget 2025</h2><p>The Union Budget 2025 introduced a range of tax proposals aimed at simplifying the tax structure, boosting domestic consumption, and rationalising compliance requirements.</p>'},
+  {title:"MCA's New Filing Requirements Under the Companies Act: Your 2025 Compliance Checklist",category:'Company Law',date:'January 2025',readTime:'6 min read',excerpt:'The MCA has issued new circulars affecting annual filings and board resolutions. Here is your step-by-step compliance checklist for 2025.',content:'<h2>The Evolving MCA Compliance Landscape</h2><p>The Ministry of Corporate Affairs continues to upgrade its regulatory framework through the MCA21 Version 3 portal.</p>'},
+  {title:'The Growing Importance of Internal Controls in MSMEs: A Practical Guide',category:'Audit',date:'December 2024',readTime:'7 min read',excerpt:'Small and medium enterprises often overlook internal controls until issues arise. This guide helps MSMEs build robust control systems from the ground up.',content:'<h2>Why Internal Controls Cannot Wait</h2><p>Most MSME owners build their business on trust and informal processes. But as the business grows, this informality enables losses.</p>'},
+  {title:'How AI is Transforming the Chartered Accountancy Profession in India',category:'General',date:'November 2024',readTime:'6 min read',excerpt:'AI is reshaping tax research, audit procedures, and financial advisory. Explore how AI-powered tools are making CA practice more efficient and insightful.',content:'<h2>The Quiet Revolution in Chartered Accountancy</h2><p>Artificial Intelligence is not a future concern for the CA profession — it is a present reality.</p>'},
+  {title:'Startup Incorporation in India: LLP vs. Private Limited — Which Suits You?',category:'Business Advisory',date:'October 2024',readTime:'8 min read',excerpt:'Choosing the right business structure is critical. We compare LLPs and Private Limited Companies on tax efficiency, compliance burden, and scalability.',content:'<h2>Choosing the Right Business Structure</h2><p>For most entrepreneurs starting a business in India, the choice comes down to the LLP and the Private Limited Company.</p>'}
+];
+
+async function seedStaticArticles() {
+  if (!confirm('This will import the 6 static website articles into Firestore so you can edit them from the admin panel. Articles already in Firestore will NOT be duplicated if the title matches. Continue?')) return;
+  showToast('Importing articles...', 'warning');
+  let imported = 0, skipped = 0;
+  try {
+    // Check existing titles to avoid duplicates
+    const existing = await db.collection('posts').get();
+    const existingTitles = new Set();
+    existing.forEach(d => existingTitles.add((d.data().title||'').toLowerCase().trim()));
+    for (const art of STATIC_ARTICLES_DATA) {
+      if (existingTitles.has(art.title.toLowerCase().trim())) { skipped++; continue; }
+      await db.collection('posts').add({
+        ...art,
+        status: 'published',
+        published: true,
+        author: 'CA. Prateek Ahuja',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      imported++;
+    }
+    showToast(imported + ' articles imported, ' + skipped + ' skipped (already exist).');
+    logActivity('Imported ' + imported + ' static articles to Firestore.');
+    loadPosts(); loadDashboard();
+  } catch(e) { showToast('Error importing: ' + e.message, 'error'); }
 }
 
 /* ─── CLIENTS ─── */
