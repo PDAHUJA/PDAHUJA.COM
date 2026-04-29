@@ -960,49 +960,35 @@ function getCatClass(cat) {
   return 'news-gen';
 }
 function renderNewsTable() {
-  const tbody = document.getElementById('newsTableBody');
-  if (!allNewsItems.length) { tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items yet. Use "+ Add News Item" to get started.</p></div></td></tr>'; return; }
-  let rows = '';
-  allNewsItems.forEach(function(n) {
-    const dateStr = n.date && n.date.toDate ? n.date.toDate().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '—';
-    const isActive = n.active !== false;
-    const toggleBg = isActive ? '#2e7d52' : '#ccc';
-    const knobLeft = isActive ? '21px' : '3px';
-    rows += '<tr>';
-    rows += '<td style="max-width:400px"><strong>' + (n.title||'—') + '</strong></td>';
-    rows += '<td><span class="news-badge ' + getCatClass(n.category) + '">' + (n.category||'—') + '</span></td>';
-    rows += '<td>' + dateStr + '</td>';
-    rows += '<td><div style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;" onclick="toggleNewsActive('' + n.id + '',' + (!isActive) + ')">';
-    rows += '<div style="position:absolute;inset:0;background:' + toggleBg + ';border-radius:22px;transition:background .3s;"></div>';
-    rows += '<div style="position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:' + knobLeft + ';transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.2);"></div>';
-    rows += '</div></td>';
-    rows += '<td><button class="btn-sm btn-danger" onclick="deleteNewsItem('' + n.id + '')"><i class="fas fa-trash"></i></button></td>';
-    rows += '</tr>';
-  });
-  tbody.innerHTML = rows;
+  var tbody = document.getElementById('newsTableBody');
+  if (!allNewsItems.length) {
+    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items yet.</p></div></td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < allNewsItems.length; i++) {
+    var n = allNewsItems[i];
+    var dateStr = (n.date && n.date.toDate) ? n.date.toDate().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '\u2014';
+    var isActive = n.active !== false;
+    var bg = isActive ? '#2e7d52' : '#ccc';
+    var knob = isActive ? '21px' : '3px';
+    var nid = String(n.id);
+    var toggleNext = String(!isActive);
+    var onclk = 'toggleNewsActive(\'' + nid + '\',' + toggleNext + ')';
+    html += '<tr>';
+    html += '<td style="max-width:400px"><strong>' + (n.title || '\u2014') + '</strong></td>';
+    html += '<td><span class="news-badge ' + getCatClass(n.category) + '">' + (n.category || '\u2014') + '</span></td>';
+    html += '<td>' + dateStr + '</td>';
+    html += '<td><div onclick="' + onclk + '" style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;border-radius:22px;background:' + bg + ';transition:background .3s">';
+    html += '<div style="position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:' + knob + ';transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>';
+    html += '</div></td>';
+    html += '<td><button class="btn-sm btn-danger" onclick="deleteNewsItem(\'' + nid + '\')"><i class="fas fa-trash"></i></button></td>';
+    html += '</tr>';
+  }
+  tbody.innerHTML = html;
 }
-function openNewsModal() {
-  document.getElementById('newsTitle').value = '';
-  document.getElementById('newsCategory').value = 'ICAI';
-  document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
-  document.getElementById('newsUrl').value = '';
-  document.getElementById('newsModal').classList.add('open');
-}
-async function saveNewsItem() {
-  const title = document.getElementById('newsTitle').value.trim();
-  const category = document.getElementById('newsCategory').value;
-  const dateStr = document.getElementById('newsDate').value;
-  const url = document.getElementById('newsUrl').value.trim();
-  if (!title || !dateStr) { showToast('Please fill Title and Date.', 'error'); return; }
-  try {
-    await db.collection('newsItems').add({
-      title, category, date: firebase.firestore.Timestamp.fromDate(new Date(dateStr)),
-      url: url || '', active: true, createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showToast('News item added!'); logActivity(`News item added: "${title}"`);
-    closeModal('newsModal'); loadNews();
-  } catch(e) { showToast('Error adding news.', 'error'); }
-}
+
+
 async function toggleNewsActive(id, active) {
   try { await db.collection('newsItems').doc(id).update({ active }); showToast(active ? 'Item activated.' : 'Item deactivated.'); }
   catch(e) { showToast('Error.', 'error'); }
