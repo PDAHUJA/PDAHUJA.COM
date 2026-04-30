@@ -1069,39 +1069,85 @@ async function loadEmailHistory() {
 
 /* ─── SEED STATIC ARTICLES ─── */
 const STATIC_ARTICLES_DATA = [
-  {title:'Key Changes in GST Return Filing for FY 2024-25: What Businesses Must Know',category:'GST',date:'March 2025',readTime:'6 min read',excerpt:'The GST Council has approved significant changes to GSTR-1, GSTR-3B, and ITC claims. We break down what these mean for your compliance calendar.',content:'<h2>What\'s New in GST Return Filing?</h2><p>The GST Council continues to refine the compliance framework, and FY 2024-25 has brought some of the most impactful structural changes since GST\'s inception.</p><h2>GSTR-1A — The Amendment Return</h2><p>One of the most significant introductions is <strong>GSTR-1A</strong>, an amendment return that allows taxpayers to revise details in GSTR-1 before the filing of GSTR-3B for the same period.</p>'},
-  {title:'Union Budget 2025: Key Tax Implications for Individuals and Corporates',category:'Income Tax',date:'February 2025',readTime:'7 min read',excerpt:'A comprehensive analysis of the Union Budget 2025 proposals — revised tax slabs, capital gains changes, and new deduction provisions explained simply.',content:'<h2>Overview of Budget 2025</h2><p>The Union Budget 2025 introduced a range of tax proposals aimed at simplifying the tax structure, boosting domestic consumption, and rationalising compliance requirements.</p>'},
-  {title:"MCA's New Filing Requirements Under the Companies Act: Your 2025 Compliance Checklist",category:'Company Law',date:'January 2025',readTime:'6 min read',excerpt:'The MCA has issued new circulars affecting annual filings and board resolutions. Here is your step-by-step compliance checklist for 2025.',content:'<h2>The Evolving MCA Compliance Landscape</h2><p>The Ministry of Corporate Affairs continues to upgrade its regulatory framework through the MCA21 Version 3 portal.</p>'},
-  {title:'The Growing Importance of Internal Controls in MSMEs: A Practical Guide',category:'Audit',date:'December 2024',readTime:'7 min read',excerpt:'Small and medium enterprises often overlook internal controls until issues arise. This guide helps MSMEs build robust control systems from the ground up.',content:'<h2>Why Internal Controls Cannot Wait</h2><p>Most MSME owners build their business on trust and informal processes. But as the business grows, this informality enables losses.</p>'},
-  {title:'How AI is Transforming the Chartered Accountancy Profession in India',category:'General',date:'November 2024',readTime:'6 min read',excerpt:'AI is reshaping tax research, audit procedures, and financial advisory. Explore how AI-powered tools are making CA practice more efficient and insightful.',content:'<h2>The Quiet Revolution in Chartered Accountancy</h2><p>Artificial Intelligence is not a future concern for the CA profession — it is a present reality.</p>'},
-  {title:'Startup Incorporation in India: LLP vs. Private Limited — Which Suits You?',category:'Business Advisory',date:'October 2024',readTime:'8 min read',excerpt:'Choosing the right business structure is critical. We compare LLPs and Private Limited Companies on tax efficiency, compliance burden, and scalability.',content:'<h2>Choosing the Right Business Structure</h2><p>For most entrepreneurs starting a business in India, the choice comes down to the LLP and the Private Limited Company.</p>'}
+  {
+    title:'Key Changes in GST Return Filing for FY 2024-25: What Businesses Must Know',
+    category:'GST', date:'March 2025', readTime:'6 min read',
+    excerpt:'The GST Council has approved significant changes to GSTR-1, GSTR-3B, and ITC claims. We break down what these mean for your compliance calendar.',
+    content:'<h2>What’s New in GST Return Filing?</h2><p>The GST Council continues to refine the compliance framework, and FY 2024-25 has brought some of the most impactful structural changes since GST’s inception.</p><h2>GSTR-1A — The Amendment Return</h2><p>One of the most significant introductions is <strong>GSTR-1A</strong>, an amendment return that allows taxpayers to revise details in GSTR-1 before the filing of GSTR-3B for the same period.</p><div class="callout"><p>GSTR-1A must be filed after GSTR-1 but before GSTR-3B for the same tax period. Use it to capture missed invoices or correct errors in B2B supply details.</p></div><h2>Invoice Management System (IMS)</h2><p>The GSTN has introduced the <strong>Invoice Management System (IMS)</strong>, which allows recipients to accept, reject, or keep invoices pending — directly impacting ITC eligibility.</p><h2>E-Invoicing Threshold Now Rs.5 Crore</h2><p>Mandatory e-invoicing now applies to all businesses with an <strong>aggregate annual turnover exceeding Rs.5 crore</strong>.</p><h2>Practical Steps</h2><ul><li>Reconcile your GSTR-2B with your purchase register every month.</li><li>Use GSTR-1A to correct errors before 3B filing.</li><li>Onboard your team to the IMS portal and establish a weekly review routine.</li><li>Ensure your accounting software generates IRNs for eligible transactions.</li></ul>'
+  },
+  {
+    title:'Union Budget 2025: Key Tax Implications for Individuals and Corporates',
+    category:'Income Tax', date:'February 2025', readTime:'7 min read',
+    excerpt:'A comprehensive analysis of the Union Budget 2025 proposals — revised tax slabs, capital gains changes, and new deduction provisions explained simply.',
+    content:'<h2>Overview of Budget 2025</h2><p>The Union Budget 2025 introduced a range of tax proposals aimed at simplifying the tax structure, boosting domestic consumption, and rationalising compliance requirements.</p><h2>New Tax Regime — More Attractive</h2><p>The <strong>basic exemption limit</strong> has been raised to <strong>Rs.4 lakh</strong>, and the <strong>rebate under Section 87A</strong> effectively makes income up to <strong>Rs.12 lakh tax-free</strong> for individuals opting for the new regime.</p><div class="callout"><p>If your annual income is up to Rs.12 lakh and you have no major deductions to claim, the new regime now likely results in zero tax liability. Recalculate your regime choice for FY 2025-26 with your CA immediately.</p></div><h2>Capital Gains — Rationalised</h2><ul><li><strong>STCG on listed equity:</strong> Increased to 20%</li><li><strong>LTCG on listed equity:</strong> 12.5%</li><li><strong>LTCG on immovable property:</strong> 12.5% without indexation benefit</li></ul>'
+  },
+  {
+    title:"MCA’s New Filing Requirements Under the Companies Act: Your 2025 Compliance Checklist",
+    category:'Company Law', date:'January 2025', readTime:'6 min read',
+    excerpt:'The MCA has issued new circulars affecting annual filings and board resolutions. Here is your step-by-step compliance checklist for 2025.',
+    content:'<h2>The Evolving MCA Compliance Landscape</h2><p>The Ministry of Corporate Affairs continues to upgrade its regulatory framework through the MCA21 Version 3 portal.</p><h2>Key Annual Filings — Due Dates</h2><ul><li><strong>AOC-4:</strong> Within 30 days of AGM</li><li><strong>MGT-7 / MGT-7A:</strong> Within 60 days of AGM</li><li><strong>ADT-1:</strong> Within 15 days of AGM</li><li><strong>DIR-3 KYC:</strong> By September 30 every year</li></ul><div class="callout"><p>Missing DIR-3 KYC by September 30 results in director DIN deactivation — preventing any form filing until completed with a Rs.5,000 penalty.</p></div>'
+  },
+  {
+    title:'The Growing Importance of Internal Controls in MSMEs: A Practical Guide',
+    category:'Audit', date:'December 2024', readTime:'7 min read',
+    excerpt:'Small and medium enterprises often overlook internal controls until issues arise. This guide helps MSMEs build robust control systems from the ground up.',
+    content:'<h2>Why Internal Controls Cannot Wait</h2><p>Most MSME owners build their business on trust and informal processes. But as the business grows, this informality enables losses — through errors, inefficiencies, and sometimes fraud.</p><div class="callout"><p>Businesses without formal internal controls lose 5 to 10% of annual revenues to inefficiencies, errors, and fraud — invisible because it never appears as a single large loss.</p></div><h2>Key Control Areas for MSMEs</h2><ul><li><strong>Cash and Banking Controls:</strong> Daily reconciliation, dual authorisation for payments.</li><li><strong>Inventory Controls:</strong> Physical verification schedules, stock reconciliation.</li><li><strong>Accounts Receivable:</strong> Credit limit policies, ageing analysis reviews.</li><li><strong>Payroll Controls:</strong> Attendance verification, authorised processing.</li></ul>'
+  },
+  {
+    title:'How AI is Transforming the Chartered Accountancy Profession in India',
+    category:'General', date:'November 2024', readTime:'6 min read',
+    excerpt:'AI is reshaping tax research, audit procedures, and financial advisory. Explore how AI-powered tools are making CA practice more efficient and insightful.',
+    content:'<h2>The Quiet Revolution in Chartered Accountancy</h2><p>Artificial Intelligence is not a future concern for the CA profession — it is a present reality. AI tools are reshaping how accountants work, and firms that embrace this change are building a significant competitive advantage.</p><div class="callout"><p>When AI handles routine data processing, auditors direct their expertise toward judgment-intensive areas: related party transactions, management estimates, revenue recognition policies, and going concern assessments.</p></div><h2>What AI Cannot Replace</h2><p>AI cannot replace professional judgment, ethical reasoning, client relationships, or the nuanced understanding of a business. The future is CAs augmented by AI, delivering superior outcomes at scale.</p>'
+  },
+  {
+    title:'Startup Incorporation in India: LLP vs. Private Limited — Which Suits You?',
+    category:'Business Advisory', date:'October 2024', readTime:'8 min read',
+    excerpt:'Choosing the right business structure is critical. We compare LLPs and Private Limited Companies on tax efficiency, compliance burden, and scalability.',
+    content:'<h2>Choosing the Right Business Structure</h2><p>For most entrepreneurs starting a business in India, the choice comes down to the <strong>LLP</strong> and the <strong>Private Limited Company</strong>.</p><h2>Choose LLP If</h2><ul><li>You are a professional services firm</li><li>You do not plan to raise external equity capital</li><li>You want lower annual compliance costs</li></ul><h2>Choose Private Limited If</h2><ul><li>You are building a scalable product or tech business</li><li>You plan to raise VC, angel, or institutional funding</li><li>You want to offer ESOPs to attract talent</li></ul><div class="callout"><p>There is no universally better structure — the right answer depends on your business model, growth plan, tax position, and funding strategy. Always consult a CA before incorporation.</p></div>'
+  }
 ];
 
 async function seedStaticArticles() {
-  if (!confirm('This will import the 6 static website articles into Firestore so you can edit them from the admin panel. Articles already in Firestore will NOT be duplicated if the title matches. Continue?')) return;
+  if (!confirm('This will import/update the 6 static website articles into Firestore.\n\nExisting articles with matching titles will have their CONTENT UPDATED with the full version.\n\nContinue?')) return;
   showToast('Importing articles...', 'warning');
-  let imported = 0, skipped = 0;
+  var imported = 0, updated = 0;
   try {
-    // Check existing titles to avoid duplicates
-    const existing = await db.collection('posts').get();
-    const existingTitles = new Set();
-    existing.forEach(d => existingTitles.add((d.data().title||'').toLowerCase().trim()));
-    for (const art of STATIC_ARTICLES_DATA) {
-      if (existingTitles.has(art.title.toLowerCase().trim())) { skipped++; continue; }
-      await db.collection('posts').add({
-        ...art,
-        status: 'published',
-        published: true,
-        author: 'CA. Prateek Ahuja',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      imported++;
+    var existing = await db.collection('posts').get();
+    var existingMap = {};
+    existing.forEach(function(d) {
+      existingMap[(d.data().title||'').toLowerCase().trim()] = d.id;
+    });
+    for (var i = 0; i < STATIC_ARTICLES_DATA.length; i++) {
+      var art = STATIC_ARTICLES_DATA[i];
+      var titleKey = art.title.toLowerCase().trim();
+      if (existingMap[titleKey]) {
+        // Update existing with full content
+        await db.collection('posts').doc(existingMap[titleKey]).update({
+          content: art.content,
+          excerpt: art.excerpt,
+          category: art.category,
+          date: art.date,
+          readTime: art.readTime,
+          status: 'published',
+          published: true,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        updated++;
+      } else {
+        await db.collection('posts').add(Object.assign({}, art, {
+          status: 'published',
+          published: true,
+          author: 'CA. Prateek Ahuja',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }));
+        imported++;
+      }
     }
-    showToast(imported + ' articles imported, ' + skipped + ' skipped (already exist).');
-    logActivity('Imported ' + imported + ' static articles to Firestore.');
+    showToast(imported + ' imported, ' + updated + ' updated with full content.');
+    logActivity('Seeded ' + imported + ' new + updated ' + updated + ' static articles.');
     loadPosts(); loadDashboard();
-  } catch(e) { showToast('Error importing: ' + e.message, 'error'); }
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 /* ─── CLIENTS ─── */
