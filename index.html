@@ -688,7 +688,7 @@ function getSourceURL(cat) {
 
 function initNewsFeed(items) {
   var ticker = document.getElementById('newsTicker'); if (!ticker) return;
-  if (!items || !items.length) items = STATIC_NEWS;
+  if (!items) items = STATIC_NEWS; // null = use static fallback; [] = genuinely empty from Firestore
   var filtered = items.filter(function(n){ return (n.d||0) <= 90; });
   if (!filtered.length) filtered = STATIC_NEWS.filter(function(n){ return n.d <= 90; });
   // Duplicate content for seamless infinite CSS scroll loop
@@ -877,7 +877,7 @@ function loadFirestoreContent() {
 
     // Load news items (Firestore-managed, auto-filtered by last 90 days)
     db.collection('newsItems').where('active','==',true).get().then(function(snap) {
-      if (snap.empty) { initNewsFeed(null); return; }
+      if (snap.empty) { initNewsFeed(null); return; } // null = use static fallback
       var now = new Date();
       var newsItems = [];
       snap.forEach(function(doc) {
@@ -891,7 +891,8 @@ function loadFirestoreContent() {
       });
       // Sort by date descending client-side
       newsItems.sort(function(a,b){ return (b.rawDate||0)-(a.rawDate||0); });
-      initNewsFeed(newsItems.length ? newsItems : null);
+      // Pass Firestore items directly - empty array means no active news in Firestore
+      initNewsFeed(newsItems.length ? newsItems : []);
     }).catch(function(err){ console.error('News load error:',err); initNewsFeed(null); });
 
     // Load insights from Firebase posts
@@ -900,11 +901,15 @@ function loadFirestoreContent() {
       var fbArticles = [];
       snap.forEach(function(doc) {
         var d = doc.data();
-        fbArticles.push({ id:doc.id, category:d.category||'Insights', date:d.date||'', readTime:d.readTime||'5 min read', title:d.title, excerpt:d.excerpt||'', source:'firebase', isNew:true });
+        fbArticles.push({ id:doc.id, category:d.category||'Insights', date:d.date||'', readTime:d.readTime||'5 min read', title:d.title, excerpt:d.excerpt||'', source:'firebase', isNew:false });
       });
-      // Sort by createdAt descending client-side
-      fbArticles.sort(function(a,b){ return 0; });
-      renderInsights(fbArticles.concat(ARTICLES));
+      // Sort by createdAt descending (use date string as fallback)
+      fbArticles.sort(function(a,b){
+        var ta = a.rawDate || 0, tb = b.rawDate || 0;
+        return tb - ta;
+      });
+      // Show ONLY Firestore articles — static ones are now managed via admin
+      renderInsights(fbArticles);
     }).catch(function(err){ console.error('Posts load error:',err); renderInsights(ARTICLES); });
 
   } catch(e) {
