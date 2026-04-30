@@ -375,11 +375,14 @@ tr:hover td{background:var(--off-white);}
       <div class="panel" id="panel-news">
         <div class="posts-toolbar">
           <span style="font-size:13px;color:var(--text-muted)">Manage regulatory news shown in the live ticker on homepage</span>
-          <button class="btn-sm btn-royal" onclick="openNewsModal()"><i class="fas fa-plus"></i> Add News Item</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm btn-outline" onclick="seedStaticNews()" title="Import default news items"><i class="fas fa-download"></i> Import Default News</button>
+            <button class="btn-sm btn-royal" onclick="openNewsModal()"><i class="fas fa-plus"></i> Add News Item</button>
+          </div>
         </div>
         <div class="posts-table-wrap">
           <table>
-            <thead><tr><th>Title</th><th>Category</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
+            <thead><tr><th>Title</th><th>Category</th><th>Date</th><th>URL</th><th>Active</th><th>Actions</th></tr></thead>
             <tbody id="newsTableBody"><tr><td colspan="5"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items yet.</p></div></td></tr></tbody>
           </table>
         </div>
@@ -946,10 +949,17 @@ async function saveAboutContent() {
 /* ─── NEWS MANAGER ─── */
 async function loadNews() {
   try {
-    const snap = await db.collection('newsItems').orderBy('date','desc').get();
-    allNewsItems = []; snap.forEach(d => allNewsItems.push({ id: d.id, ...d.data() }));
+    const snap = await db.collection('newsItems').get();
+    allNewsItems = [];
+    snap.forEach(d => allNewsItems.push({ id: d.id, ...d.data() }));
+    // Sort by date descending client-side
+    allNewsItems.sort(function(a,b){
+      var ta = (a.date && a.date.toDate) ? a.date.toDate().getTime() : 0;
+      var tb = (b.date && b.date.toDate) ? b.date.toDate().getTime() : 0;
+      return tb - ta;
+    });
     renderNewsTable();
-  } catch(e) { console.error(e); }
+  } catch(e) { console.error('News load error:', e); }
 }
 function getCatClass(cat) {
   if (!cat) return 'news-gen'; const c = cat.toLowerCase();
@@ -979,10 +989,16 @@ function renderNewsTable() {
     html += '<td style="max-width:400px"><strong>' + (n.title || '\u2014') + '</strong></td>';
     html += '<td><span class="news-badge ' + getCatClass(n.category) + '">' + (n.category || '\u2014') + '</span></td>';
     html += '<td>' + dateStr + '</td>';
+    var urlDisplay = n.url ? '<a href="' + n.url + '" target="_blank" style="color:var(--royal);font-size:11px;text-decoration:none" title="' + n.url + '">🔗 Link</a>' : '<span style="color:var(--text-muted);font-size:11px">No URL</span>';
+    html += '<td>' + urlDisplay + '</td>';
     html += '<td><div onclick="' + onclk + '" style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;border-radius:22px;background:' + bg + ';transition:background .3s">';
     html += '<div style="position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:' + knob + ';transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>';
     html += '</div></td>';
-    html += '<td><button class="btn-sm btn-danger" onclick="deleteNewsItem(\'' + nid + '\')"><i class="fas fa-trash"></i></button></td>';
+    var editOnclick = 'openNewsModal(allNewsItems[' + i + '])';
+    html += '<td style="display:flex;gap:6px">';
+    html += '<button class="btn-sm btn-outline" onclick="' + editOnclick + '"><i class="fas fa-edit"></i></button>';
+    html += '<button class="btn-sm btn-danger" onclick="deleteNewsItem(\'' + nid + '\')"><i class="fas fa-trash"></i></button>';
+    html += '</td>';
     html += '</tr>';
   }
   tbody.innerHTML = html;
@@ -997,6 +1013,83 @@ async function deleteNewsItem(id) {
   if (!confirm('Delete this news item?')) return;
   try { await db.collection('newsItems').doc(id).delete(); showToast('Deleted.'); loadNews(); }
   catch(e) { showToast('Error.', 'error'); }
+}
+
+
+/* ─── NEWS MODAL FUNCTIONS (were missing) ─── */
+var editingNewsId = null;
+
+function openNewsModal(newsItem) {
+  editingNewsId = newsItem ? newsItem.id : null;
+  var header = document.querySelector('#newsModal .modal-header h3');
+  if (header) header.textContent = newsItem ? 'Edit News Item' : 'Add News Item';
+  document.getElementById('newsTitle').value = newsItem ? (newsItem.title || '') : '';
+  document.getElementById('newsCategory').value = newsItem ? (newsItem.category || 'ICAI') : 'ICAI';
+  if (newsItem && newsItem.date && newsItem.date.toDate) {
+    document.getElementById('newsDate').value = newsItem.date.toDate().toISOString().split('T')[0];
+  } else {
+    document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
+  }
+  document.getElementById('newsUrl').value = newsItem ? (newsItem.url || '') : '';
+  document.getElementById('newsModal').classList.add('open');
+}
+
+async function saveNewsItem() {
+  var title = document.getElementById('newsTitle').value.trim();
+  var category = document.getElementById('newsCategory').value;
+  var dateStr = document.getElementById('newsDate').value;
+  var url = document.getElementById('newsUrl').value.trim();
+  if (!title || !dateStr) { showToast('Please fill Title and Date.', 'error'); return; }
+  var dateObj = firebase.firestore.Timestamp.fromDate(new Date(dateStr));
+  try {
+    if (editingNewsId) {
+      await db.collection('newsItems').doc(editingNewsId).update({
+        title: title, category: category, date: dateObj, url: url,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('News item updated!');
+      logActivity('News item updated: "' + title + '"');
+    } else {
+      await db.collection('newsItems').add({
+        title: title, category: category, date: dateObj, url: url,
+        active: true, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showToast('News item added!');
+      logActivity('News item added: "' + title + '"');
+    }
+    editingNewsId = null;
+    closeModal('newsModal');
+    loadNews();
+  } catch(e) { showToast('Error saving news: ' + e.message, 'error'); }
+}
+
+async function seedStaticNews() {
+  var STATIC_NEWS = [
+    {title:'ICAI issues Revised Guidance Note on Tax Audit under Section 44AB', category:'ICAI', date:'2025-03-01', url:'https://www.icai.org'},
+    {title:'CBDT extends ITR filing deadline for AY 2024-25', category:'Income Tax', date:'2025-02-15', url:'https://www.incometax.gov.in'},
+    {title:'GST Council approves amnesty scheme for pending returns', category:'GST', date:'2025-01-20', url:'https://www.gst.gov.in'},
+    {title:'MCA notifies Companies (Accounts) Amendment Rules 2025', category:'MCA', date:'2025-01-10', url:'https://www.mca.gov.in'},
+    {title:'RBI releases updated KYC Master Direction', category:'General', date:'2024-12-15', url:'https://www.rbi.org.in'},
+    {title:'SEBI introduces new disclosure norms for listed entities', category:'General', date:'2024-12-01', url:'https://www.sebi.gov.in'}
+  ];
+  if (!confirm('Import ' + STATIC_NEWS.length + ' default news items into News Manager?\nExisting items will NOT be duplicated.')) return;
+  showToast('Importing news...', 'warning');
+  var existing = await db.collection('newsItems').get();
+  var existingTitles = new Set();
+  existing.forEach(function(d){ existingTitles.add((d.data().title||'').toLowerCase().trim()); });
+  var imported = 0;
+  for (var i = 0; i < STATIC_NEWS.length; i++) {
+    var n = STATIC_NEWS[i];
+    if (existingTitles.has(n.title.toLowerCase().trim())) continue;
+    await db.collection('newsItems').add({
+      title: n.title, category: n.category, url: n.url, active: true,
+      date: firebase.firestore.Timestamp.fromDate(new Date(n.date)),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    imported++;
+  }
+  showToast(imported + ' news items imported.');
+  loadNews();
 }
 
 /* ─── EMAIL HUB ─── */
