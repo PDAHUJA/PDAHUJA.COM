@@ -1006,6 +1006,23 @@ function renderNewsTable() {
 }
 
 
+var editingNewsId = null;
+
+function openNewsModal(newsItem) {
+  editingNewsId = newsItem ? newsItem.id : null;
+  var header = document.querySelector('#newsModal .modal-header h3');
+  if (header) header.textContent = editingNewsId ? 'Edit News Item' : 'Add News Item';
+  document.getElementById('newsTitle').value = newsItem ? (newsItem.title || '') : '';
+  document.getElementById('newsCategory').value = newsItem ? (newsItem.category || 'ICAI') : 'ICAI';
+  if (newsItem && newsItem.date && newsItem.date.toDate) {
+    document.getElementById('newsDate').value = newsItem.date.toDate().toISOString().split('T')[0];
+  } else {
+    document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
+  }
+  document.getElementById('newsUrl').value = newsItem ? (newsItem.url || '') : '';
+  document.getElementById('newsModal').classList.add('open');
+}
+
 function editNewsItem(idx) {
   var item = allNewsItems[idx];
   if (item) openNewsModal(item);
