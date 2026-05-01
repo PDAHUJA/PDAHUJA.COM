@@ -688,8 +688,15 @@ function getSourceURL(cat) {
 
 function initNewsFeed(items) {
   var ticker = document.getElementById('newsTicker'); if (!ticker) return;
-  if (!items) items = STATIC_NEWS; // null = use static fallback; [] = genuinely empty from Firestore
-  var filtered = items.filter(function(n){ return (n.d||0) <= 90; });
+  // null = no Firestore data, use STATIC_NEWS
+  // array with items = use those items directly (admin controls what's shown)
+  if (!items || !items.length) {
+    items = STATIC_NEWS;
+  }
+  // For Firestore items: show all (no age filter — admin decides)
+  // For static items: apply 90-day filter
+  var isStatic = items === STATIC_NEWS || (items.length && items[0].hasOwnProperty('d') && !items[0].hasOwnProperty('rawDate'));
+  var filtered = isStatic ? items.filter(function(n){ return (n.d||0) <= 90; }) : items;
   if (!filtered.length) filtered = STATIC_NEWS.filter(function(n){ return n.d <= 90; });
   // Duplicate content for seamless infinite CSS scroll loop
   var itemsHTML = buildNewsHTML(filtered);
@@ -877,23 +884,28 @@ function loadFirestoreContent() {
 
     // Load news items (Firestore-managed, auto-filtered by last 90 days)
     db.collection('newsItems').where('active','==',true).get().then(function(snap) {
-      if (snap.empty) { initNewsFeed(null); return; } // null = use static fallback
-      var now = new Date();
+      if (snap.empty) { initNewsFeed(null); return; } // null = use STATIC_NEWS fallback
       var newsItems = [];
       snap.forEach(function(doc) {
         var data = doc.data();
-        var itemDate = data.date && data.date.toDate ? data.date.toDate() : new Date(data.date);
-        var daysAgo = Math.floor((now - itemDate) / 86400000);
-        if (daysAgo <= 90) {
-          newsItems.push({ cat: data.category||'General', catClass: getCatClass(data.category), rawDate: data.date && data.date.toDate ? data.date.toDate().getTime() : 0, d: daysAgo,
-            dateLabel: itemDate.toLocaleString('en-IN',{month:'short',year:'numeric'}), title: data.title });
-        }
+        var itemDate = (data.date && data.date.toDate) ? data.date.toDate() : new Date();
+        var daysAgo = Math.floor((new Date() - itemDate) / 86400000);
+        // Show ALL active Firestore items — no age filter (admin controls what's shown)
+        newsItems.push({
+          cat: data.category || 'General',
+          catClass: getCatClass(data.category),
+          rawDate: itemDate.getTime(),
+          d: daysAgo,
+          dateLabel: itemDate.toLocaleString('en-IN', {month:'short', year:'numeric'}),
+          title: data.title || '',
+          url: data.url || ''
+        });
       });
-      // Sort by date descending client-side
-      newsItems.sort(function(a,b){ return (b.rawDate||0)-(a.rawDate||0); });
-      // Pass Firestore items directly - empty array means no active news in Firestore
-      initNewsFeed(newsItems.length ? newsItems : []);
-    }).catch(function(err){ console.error('News load error:',err); initNewsFeed(null); });
+      // Sort newest first
+      newsItems.sort(function(a,b){ return b.rawDate - a.rawDate; });
+      // Use Firestore items — only fall back to static if truly nothing returned
+      initNewsFeed(newsItems.length ? newsItems : null);
+    }).catch(function(err){ console.error('News load error:', err); initNewsFeed(null); });
 
     // Load insights from Firebase posts
     db.collection('posts').where('status','==','published').get().then(function(snap) {
