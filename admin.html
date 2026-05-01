@@ -972,31 +972,32 @@ function getCatClass(cat) {
 function renderNewsTable() {
   var tbody = document.getElementById('newsTableBody');
   if (!allNewsItems.length) {
-    tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items yet.</p></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="fas fa-rss"></i><p>No news items. Click "+ Add News Item" to get started.</p></div></td></tr>';
     return;
   }
   var html = '';
   for (var i = 0; i < allNewsItems.length; i++) {
     var n = allNewsItems[i];
+    var nid = n.id;
     var dateStr = (n.date && n.date.toDate) ? n.date.toDate().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) : '\u2014';
     var isActive = n.active !== false;
     var bg = isActive ? '#2e7d52' : '#ccc';
     var knob = isActive ? '21px' : '3px';
-    var nid = String(n.id);
-    var toggleNext = String(!isActive);
-    var onclk = 'toggleNewsActive(\'' + nid + '\',' + toggleNext + ')';
+    var nextActive = String(!isActive);
+    var urlHtml = n.url ? '<a href="' + n.url + '" target="_blank" style="color:var(--royal);font-size:11px">\uD83D\uDD17 Link</a>' : '<span style="color:#bbb;font-size:11px">\u2014</span>';
     html += '<tr>';
-    html += '<td style="max-width:400px"><strong>' + (n.title || '\u2014') + '</strong></td>';
+    html += '<td style="max-width:340px"><strong>' + (n.title || '\u2014') + '</strong></td>';
     html += '<td><span class="news-badge ' + getCatClass(n.category) + '">' + (n.category || '\u2014') + '</span></td>';
     html += '<td>' + dateStr + '</td>';
-    var urlDisplay = n.url ? '<a href="' + n.url + '" target="_blank" style="color:var(--royal);font-size:11px;text-decoration:none" title="' + n.url + '">🔗 Link</a>' : '<span style="color:var(--text-muted);font-size:11px">No URL</span>';
-    html += '<td>' + urlDisplay + '</td>';
-    html += '<td><div onclick="' + onclk + '" style="position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;border-radius:22px;background:' + bg + ';transition:background .3s">';
-    html += '<div style="position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:' + knob + ';transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)"></div>';
+    html += '<td>' + urlHtml + '</td>';
+    var toggleStyle = 'position:relative;display:inline-block;width:40px;height:22px;cursor:pointer;border-radius:11px;background:' + bg + ';transition:background .25s';
+    var knobStyle = 'position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:' + knob + ';transition:left .25s;box-shadow:0 1px 3px rgba(0,0,0,.25)';
+    html += '<td>';
+    html += '<div onclick="toggleNewsActive(\'' + nid + '\',' + nextActive + ')" style="' + toggleStyle + '">';
+    html += '<div style="' + knobStyle + '"></div>';
     html += '</div></td>';
-    var editOnclick = 'openNewsModal(allNewsItems[' + i + '])';
-    html += '<td style="display:flex;gap:6px">';
-    html += '<button class="btn-sm btn-outline" onclick="' + editOnclick + '"><i class="fas fa-edit"></i></button>';
+    html += '<td style="white-space:nowrap">';
+    html += '<button class="btn-sm btn-outline" onclick="editNewsItem(' + i + ')" style="margin-right:6px"><i class="fas fa-edit"></i></button>';
     html += '<button class="btn-sm btn-danger" onclick="deleteNewsItem(\'' + nid + '\')"><i class="fas fa-trash"></i></button>';
     html += '</td>';
     html += '</tr>';
@@ -1005,33 +1006,9 @@ function renderNewsTable() {
 }
 
 
-async function toggleNewsActive(id, active) {
-  try { await db.collection('newsItems').doc(id).update({ active }); showToast(active ? 'Item activated.' : 'Item deactivated.'); }
-  catch(e) { showToast('Error.', 'error'); }
-}
-async function deleteNewsItem(id) {
-  if (!confirm('Delete this news item?')) return;
-  try { await db.collection('newsItems').doc(id).delete(); showToast('Deleted.'); loadNews(); }
-  catch(e) { showToast('Error.', 'error'); }
-}
-
-
-/* ─── NEWS MODAL FUNCTIONS (were missing) ─── */
-var editingNewsId = null;
-
-function openNewsModal(newsItem) {
-  editingNewsId = newsItem ? newsItem.id : null;
-  var header = document.querySelector('#newsModal .modal-header h3');
-  if (header) header.textContent = newsItem ? 'Edit News Item' : 'Add News Item';
-  document.getElementById('newsTitle').value = newsItem ? (newsItem.title || '') : '';
-  document.getElementById('newsCategory').value = newsItem ? (newsItem.category || 'ICAI') : 'ICAI';
-  if (newsItem && newsItem.date && newsItem.date.toDate) {
-    document.getElementById('newsDate').value = newsItem.date.toDate().toISOString().split('T')[0];
-  } else {
-    document.getElementById('newsDate').value = new Date().toISOString().split('T')[0];
-  }
-  document.getElementById('newsUrl').value = newsItem ? (newsItem.url || '') : '';
-  document.getElementById('newsModal').classList.add('open');
+function editNewsItem(idx) {
+  var item = allNewsItems[idx];
+  if (item) openNewsModal(item);
 }
 
 async function saveNewsItem() {
