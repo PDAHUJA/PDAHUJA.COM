@@ -592,6 +592,7 @@ footer{background:rgba(255,255,255,0.42);backdrop-filter:blur(20px);-webkit-back
 /* ============================================================
    CONFIG
 ============================================================ */
+var db = null; // initialized after Firebase loads
 var FORMSPREE_ID = 'xgoppkzz';
 var GSCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbyAFG8gZYbQyybG8ahjoS3z83l0rFlRCrLpLRNfBaDrMZbCp6-O3MG66fLNqEVDMB4L/exec';
 
@@ -639,72 +640,72 @@ ARTICLE_BODIES[5] = '<h2>The Quiet Revolution in Chartered Accountancy</h2><p>Ar
 ARTICLE_BODIES[6] = '<h2>Choosing the Right Business Structure</h2><p>For most entrepreneurs starting a business in India, the choice comes down to the <strong>LLP</strong> and the <strong>Private Limited Company</strong>.</p><h2>Choose LLP If</h2><ul><li>You are a professional services firm</li><li>You do not plan to raise external equity capital</li><li>You want lower annual compliance costs</li></ul><h2>Choose Private Limited If</h2><ul><li>You are building a scalable product or tech business</li><li>You plan to raise VC, angel, or institutional funding</li><li>You want to offer ESOPs to attract talent</li></ul><div class="callout"><p>There is no universally better structure \u2014 the right answer depends on your business model, growth plan, tax position, and funding strategy. Always consult a CA before incorporation.</p></div>';
 
 /* Curated static news with date-aware filtering (only last 90 days shown) */
-var STATIC_NEWS = [
-  { cat:'ICAI', catClass:'cat-icai', d:0, title:'ICAI issues updated guidance on reporting under CARO 2020 for FY 2024-25' },
-  { cat:'Income Tax', catClass:'cat-it', d:2, title:'CBDT clarifies Section 87A rebate eligibility for special rate incomes \u2014 AY 2024-25' },
-  { cat:'GST', catClass:'cat-gst', d:5, title:'GSTN advisory: IMS (Invoice Management System) mandatory from April 2025' },
-  { cat:'MCA', catClass:'cat-mca', d:7, title:'MCA notifies new MSME payment disclosure requirement in financial statements' },
-  { cat:'Income Tax', catClass:'cat-it', d:12, title:'CBDT extends ITR filing deadline for audit cases \u2014 key dates confirmed' },
-  { cat:'GST', catClass:'cat-gst', d:18, title:'New auto-population of e-invoices into GSTR-1 effective from April 2025' },
-  { cat:'ICAI', catClass:'cat-icai', d:22, title:'ICAI Exposure Draft on SA 600 (Group Audits) \u2014 comments invited till May 15' },
-  { cat:'Income Tax', catClass:'cat-it', d:28, title:'CBDT clarifies Section 194Q TDS applicability for FY 2025-26 transactions' },
-  { cat:'MCA', catClass:'cat-mca', d:33, title:'LLP Amendment Rules 2025 notified \u2014 enhanced compliance framework for LLPs' },
-  { cat:'ICAI', catClass:'cat-icai', d:40, title:'MEF 2025-26 empanelment window now open for practicing CAs \u2014 apply before deadline' },
-  { cat:'GST', catClass:'cat-gst', d:45, title:'GST Council: Reduced rate on life insurance premiums notified in gazette' },
-  { cat:'Income Tax', catClass:'cat-it', d:55, title:'New ITR forms for AY 2025-26 notified by CBDT \u2014 schedule of changes explained' },
-  { cat:'MCA', catClass:'cat-mca', d:62, title:'MCA mandates Business Responsibility Reporting for top 1000 listed companies' },
-  { cat:'General', catClass:'cat-gen', d:70, title:'RBI announces new guidelines for MSME credit guarantee schemes and NPA norms' },
-  { cat:'ICAI', catClass:'cat-icai', d:80, title:'ICAI updates Code of Ethics \u2014 peer review mandate extended to Category II firms' }
-];
+/* News is fully managed via Firestore (admin panel) — no static fallback */
 
-function getNewsDateLabel(daysAgo) {
-  var d = new Date(); d.setDate(d.getDate() - daysAgo);
-  return d.toLocaleString('en-IN',{month:'short',year:'numeric'});
+function getCatClassFromCat(cat) {
+  if (!cat) return 'cat-gen';
+  var c = cat.toLowerCase();
+  if (c.includes('icai')) return 'cat-icai';
+  if (c.includes('income tax') || c.includes('cbdt') || c.includes('income')) return 'cat-it';
+  if (c.includes('gst')) return 'cat-gst';
+  if (c.includes('mca') || c.includes('company')) return 'cat-mca';
+  return 'cat-gen';
 }
 
 function buildNewsHTML(items) {
-  return items.map(function(n){
-    var url = n.url || getSourceURL(n.cat);
-    return '<a class="news-item" href="' + url + '" target="_blank" rel="noopener noreferrer">' +
+  if (!items || !items.length) {
+    return '<div class="news-item" style="opacity:0.5;cursor:default"><div class="news-item-title">No regulatory updates at this time.</div></div>';
+  }
+  return items.map(function(n) {
+    var href = n.url ? ' href="' + n.url + '" target="_blank" rel="noopener noreferrer"' : '';
+    var catClass = getCatClassFromCat(n.cat);
+    return '<a class="news-item"' + href + '>' +
       '<div class="news-item-meta">' +
-        '<span class="news-cat-badge ' + n.catClass + '">' + n.cat + '</span>' +
-        '<span class="news-item-date">' + (n.dateLabel||getNewsDateLabel(n.d||0)) + '</span>' +
+        '<span class="news-cat-badge ' + catClass + '">' + n.cat + '</span>' +
+        '<span class="news-item-date">' + (n.dateLabel || '') + '</span>' +
       '</div>' +
-      '<div class="news-item-title">' + n.title + ' &#8599;</div>' +
+      '<div class="news-item-title">' + n.title + (n.url ? ' &#8599;' : '') + '</div>' +
     '</a>';
   }).join('');
 }
 
-function getSourceURL(cat) {
-  if (!cat) return 'https://www.icai.org/new-post.html?post_id=15656';
-  var c = cat.toLowerCase();
-  if (c.includes('icai')) return 'https://www.icai.org/new-post.html?post_id=15656';
-  if (c.includes('income tax') || c.includes('cbdt')) return 'https://www.incometax.gov.in/iec/foportal/';
-  if (c.includes('gst')) return 'https://www.gst.gov.in/newsandupdates/read';
-  if (c.includes('mca')) return 'https://www.mca.gov.in/content/mca/global/en/mca/announcements.html';
-  if (c.includes('rbi')) return 'https://www.rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx';
-  return 'https://pib.gov.in/allRel.aspx';
+function initNewsFeed(items) {
+  var ticker = document.getElementById('newsTicker');
+  if (!ticker) return;
+  var html = buildNewsHTML(items || []);
+  // Duplicate for seamless CSS scroll loop
+  ticker.innerHTML = html + html;
+  ticker.classList.remove('running');
+  setTimeout(function() { ticker.classList.add('running'); }, 80);
 }
 
-function initNewsFeed(items) {
-  var ticker = document.getElementById('newsTicker'); if (!ticker) return;
-  // null = no Firestore data, use STATIC_NEWS
-  // array with items = use those items directly (admin controls what's shown)
-  if (!items || !items.length) {
-    items = STATIC_NEWS;
-  }
-  // For Firestore items: show all (no age filter — admin decides)
-  // For static items: apply 90-day filter
-  var isStatic = items === STATIC_NEWS || (items.length && items[0].hasOwnProperty('d') && !items[0].hasOwnProperty('rawDate'));
-  var filtered = isStatic ? items.filter(function(n){ return (n.d||0) <= 90; }) : items;
-  if (!filtered.length) filtered = STATIC_NEWS.filter(function(n){ return n.d <= 90; });
-  // Duplicate content for seamless infinite CSS scroll loop
-  var itemsHTML = buildNewsHTML(filtered);
-  ticker.innerHTML = itemsHTML + itemsHTML;
-  ticker.classList.remove('running');
-  // Small delay so layout reflows before animation starts
-  setTimeout(function(){ ticker.classList.add('running'); }, 80);
+function loadNewsFeed() {
+  var newsDb = (typeof db !== 'undefined' && db) ? db : firebase.firestore();
+  newsDb.collection('newsItems')
+    .where('active', '==', true)
+    .orderBy('date', 'desc')
+    .get()
+    .then(function(snap) {
+      if (snap.empty) { initNewsFeed([]); return; }
+      var items = [];
+      snap.forEach(function(doc) {
+        var d = doc.data();
+        var dt = d.date && d.date.toDate ? d.date.toDate() : new Date();
+        items.push({
+          cat: d.category || 'General',
+          title: d.title || '',
+          url: d.url || '',
+          dateLabel: dt.toLocaleString('en-IN', { month: 'short', year: 'numeric' })
+        });
+      });
+      initNewsFeed(items);
+    })
+    .catch(function(err) {
+      console.error('News load error:', err);
+      initNewsFeed([]);
+    });
 }
+
 
 /* ============================================================
    RENDER FUNCTIONS
@@ -839,7 +840,7 @@ function copyArticleLink(param) {
 ============================================================ */
 function loadFirestoreContent() {
   try {
-    var db = firebase.firestore();
+    db = firebase.firestore(); // use global db
 
     // Load homepage content (hero text, stats)
     db.collection('siteContent').doc('homepage').get().then(function(doc) {
@@ -883,29 +884,7 @@ function loadFirestoreContent() {
     }).catch(function(){ renderFeatured(DEFAULT_FEATURED); triggerReveal(); });
 
     // Load news items (Firestore-managed, auto-filtered by last 90 days)
-    db.collection('newsItems').where('active','==',true).get().then(function(snap) {
-      if (snap.empty) { initNewsFeed(null); return; } // null = use STATIC_NEWS fallback
-      var newsItems = [];
-      snap.forEach(function(doc) {
-        var data = doc.data();
-        var itemDate = (data.date && data.date.toDate) ? data.date.toDate() : new Date();
-        var daysAgo = Math.floor((new Date() - itemDate) / 86400000);
-        // Show ALL active Firestore items — no age filter (admin controls what's shown)
-        newsItems.push({
-          cat: data.category || 'General',
-          catClass: getCatClass(data.category),
-          rawDate: itemDate.getTime(),
-          d: daysAgo,
-          dateLabel: itemDate.toLocaleString('en-IN', {month:'short', year:'numeric'}),
-          title: data.title || '',
-          url: data.url || ''
-        });
-      });
-      // Sort newest first
-      newsItems.sort(function(a,b){ return b.rawDate - a.rawDate; });
-      // Use Firestore items — only fall back to static if truly nothing returned
-      initNewsFeed(newsItems.length ? newsItems : null);
-    }).catch(function(err){ console.error('News load error:', err); initNewsFeed(null); });
+    loadNewsFeed();
 
     // Load insights from Firebase posts
     db.collection('posts').where('status','==','published').get().then(function(snap) {
@@ -932,19 +911,12 @@ function loadFirestoreContent() {
     renderServicesDetail(DEFAULT_SERVICES);
     renderFeatured(DEFAULT_FEATURED);
     renderInsights(ARTICLES);
-    initNewsFeed(null);
+    loadNewsFeed();
   }
 }
 
-function getCatClass(cat) {
-  if (!cat) return 'cat-gen';
-  var c = cat.toLowerCase();
-  if (c.includes('icai')) return 'cat-icai';
-  if (c.includes('tax') || c.includes('cbdt') || c.includes('income')) return 'cat-it';
-  if (c.includes('gst')) return 'cat-gst';
-  if (c.includes('mca') || c.includes('company')) return 'cat-mca';
-  return 'cat-gen';
-}
+function getCatClass(cat) { return getCatClassFromCat(cat); }
+
 
 /* ============================================================
    NAV + PAGE ROUTING
@@ -1117,7 +1089,8 @@ try {
   renderServicesDetail(DEFAULT_SERVICES);
   renderFeatured(DEFAULT_FEATURED);
   renderInsights(ARTICLES);
-  initNewsFeed(null);
+  // Don't call loadNewsFeed() here - Firebase not available
+  initNewsFeed([]);
 }
 </script>
 </body>
