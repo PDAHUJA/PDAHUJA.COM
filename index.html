@@ -672,8 +672,14 @@ function buildNewsHTML(items) {
 function initNewsFeed(items) {
   var ticker = document.getElementById('newsTicker');
   if (!ticker) return;
-  var html = buildNewsHTML(items || []);
-  // Duplicate for seamless CSS scroll loop
+  if (!items || !items.length) {
+    // Empty state - show once, no scroll loop
+    ticker.innerHTML = buildNewsHTML([]);
+    ticker.classList.remove('running');
+    return;
+  }
+  var html = buildNewsHTML(items);
+  // Duplicate for seamless CSS scroll loop (only when there are real items)
   ticker.innerHTML = html + html;
   ticker.classList.remove('running');
   setTimeout(function() { ticker.classList.add('running'); }, 80);
@@ -883,7 +889,7 @@ function loadFirestoreContent() {
       triggerReveal();
     }).catch(function(){ renderFeatured(DEFAULT_FEATURED); triggerReveal(); });
 
-    // Load news items (Firestore-managed, auto-filtered by last 90 days)
+    // Load news items from Firestore (admin-controlled)
     loadNewsFeed();
 
     // Load insights from Firebase posts
@@ -904,14 +910,14 @@ function loadFirestoreContent() {
     }).catch(function(err){ console.error('Posts load error:',err); renderInsights(ARTICLES); });
 
   } catch(e) {
-    // Fallback: use all defaults
+    // Fallback: use all defaults (Firestore unavailable)
     renderTeamCards(DEFAULT_TEAM,'teamGrid');
     renderTeamCards(DEFAULT_TEAM,'aboutTeamGrid');
     renderHomeServices(DEFAULT_SERVICES);
     renderServicesDetail(DEFAULT_SERVICES);
     renderFeatured(DEFAULT_FEATURED);
     renderInsights(ARTICLES);
-    loadNewsFeed();
+    initNewsFeed([]); // Firebase not available, show empty news
   }
 }
 
