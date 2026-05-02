@@ -673,14 +673,13 @@ function initNewsFeed(items) {
   var ticker = document.getElementById('newsTicker');
   if (!ticker) return;
   if (!items || !items.length) {
-    // Empty state - show once, no scroll loop
     ticker.innerHTML = buildNewsHTML([]);
     ticker.classList.remove('running');
     return;
   }
   var html = buildNewsHTML(items);
-  // Duplicate for seamless CSS scroll loop (only when there are real items)
-  ticker.innerHTML = html + html;
+  // Only duplicate for scroll loop if 4+ items (otherwise it looks repeated)
+  ticker.innerHTML = items.length >= 4 ? html + html : html;
   ticker.classList.remove('running');
   setTimeout(function() { ticker.classList.add('running'); }, 80);
 }
